@@ -53,4 +53,5 @@ def drums_generate_rnn_sequence_from_midi():
     except FileNotFoundError:
         abort(404)
 
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
