@@ -1,2 +1,2 @@
-pipinstall: pip install -r midi_generation/requirements.txt
+pipinstall: pip install -r requirements.txt
 web: npm start
