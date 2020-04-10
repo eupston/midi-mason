@@ -18,11 +18,11 @@ def main(args):
               ' --num_outputs=1 '
               ' --num_steps={}'
               ' --primer_drums="{}"'.format(args.num_steps, args.primer_drums))
-    list_of_files = [os.path.join(os.getcwd(), "midi_generation/output", file) for file in os.listdir("midi_generation/output")]
-    latest_file = max(list_of_files, key=os.path.getctime)
-    S3.initialize()
-    s3_path = S3.upload_file(latest_file, object_name='midi/{}'.format(os.path.split(latest_file)[-1]))
-    print(s3_path)
+#     list_of_files = [os.path.join(os.getcwd(), "midi_generation/output", file) for file in os.listdir("midi_generation/output")]
+#     latest_file = max(list_of_files, key=os.path.getctime)
+#     S3.initialize()
+#     s3_path = S3.upload_file(latest_file, object_name='midi/{}'.format(os.path.split(latest_file)[-1]))
+    print("test path")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Drum RNN Generation')
