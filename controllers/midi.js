@@ -9,7 +9,6 @@ let {PythonShell} = require('python-shell')
 exports.generateMidiDrums = asyncHandler(async (req, res, next) => {
     let options = {
         mode: 'text',
-        pythonPath: "./midi_generation/venv/bin/python",
         scriptPath: "./midi_generation",
         args:['--num_steps', '32', "--primer_drums", "[]"]
     };

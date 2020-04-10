@@ -2,8 +2,14 @@ import os
 import sys
 import argparse
 import subprocess
+import requests
 
 def main(args):
+    if not os.path.exists("assets/MLmodels/drum_kit_rnn.mag"):
+        url = "https://midi-mason.s3-us-west-2.amazonaws.com/models/drum_kit_rnn.mag"
+        r = requests.get(url, allow_redirects=True)
+        myfile = requests.get(url)
+        open('midi_generation/assets/MLmodels/drum_kit_rnn.mag', 'wb').write(myfile.content)
     os.system('drums_rnn_generate '
               ' --config="drum_kit" '
               ' --bundle_file="midi_generation/assets/MLmodels/drum_kit_rnn.mag"'
