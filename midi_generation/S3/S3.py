@@ -1,17 +1,19 @@
+import sys
+import os
 import logging
 from botocore.exceptions import ClientError
 import boto3
-from config.settings import *
 
-client = boto3.client(
-    's3',
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+from settings import *
 
-)
-
-response = client.list_buckets()
-print(response)
+def initialize():
+    """Start the S3 client with the AWS creds"""
+    client = boto3.client(
+        's3',
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    )
 
 def upload_file(file_name, bucket="midi-mason", object_name=None):
     """Upload a file to an S3 bucket
@@ -33,7 +35,7 @@ def upload_file(file_name, bucket="midi-mason", object_name=None):
     except ClientError as e:
         logging.error(e)
         return False
-    return "https://midi-mason.s3-us-west-2.amazonaws.com/" + object_name
+    return S3_BUCKET + "/" + object_name
 
 
 if __name__ == '__main__':
