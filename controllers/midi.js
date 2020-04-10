@@ -1,6 +1,7 @@
 const asyncHandler = require('../middleware/asyncHandler');
 const ErrorResponse = require('../Utils/errorResponse');
 const {PythonShell} = require('python-shell')
+var AWS = require('aws-sdk');
 
 // @desc    Generates Midi drums
 // @route   GET /api/v1/midi/generate_drum_rnn
