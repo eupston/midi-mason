@@ -3,10 +3,19 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const dotenv = require('dotenv');
+const connectDB = require('./config/db');
+const errorHandler = require('./middleware/error');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var midiRouter = require('./routes/midi');
+
+// Load environment variables
+dotenv.config({ path: './config/config.env' });
+
+// Connect to database
+connectDB();
 
 var app = express();
 
@@ -22,7 +31,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api/v1/users', usersRouter);
-app.use('/api/v1/midi', midiRouter);
+app.use('/api/v1/generate_midi', midiRouter);
+
+app.use(errorHandler);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

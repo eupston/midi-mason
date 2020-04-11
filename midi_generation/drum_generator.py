@@ -4,9 +4,8 @@ import argparse
 import subprocess
 from S3 import S3
 import requests
-#TODO figure out why this is throwing error FileNotFoundError: [Errno 2] No such file or directory: 'midi_generation/output'\n",
 
-def main(args):
+def generate_drum_rnn_midi_sequence(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
     output_dir = os.path.join(current_dir, "output")
     model_dir = os.path.join(current_dir, "assets/MLmodels")
@@ -16,6 +15,7 @@ def main(args):
         r = requests.get(url, allow_redirects=True)
         myfile = requests.get(url)
         open(model_path, 'wb').write(myfile.content)
+    #TODO switch to subprocess
     os.system('drums_rnn_generate '
               ' --config="drum_kit" '
               ' --bundle_file="{}"'
@@ -27,6 +27,7 @@ def main(args):
     latest_file = max(list_of_files, key=os.path.getctime)
     S3.initialize()
     s3_path = S3.upload_file(latest_file, object_name='midi/{}'.format(os.path.split(latest_file)[-1]))
+    os.remove(latest_file)
     print(s3_path)
 
 if __name__ == '__main__':
@@ -34,4 +35,4 @@ if __name__ == '__main__':
     parser.add_argument('--num_steps')
     parser.add_argument('--primer_drums')
     args = parser.parse_args()
-    main(args)
+    generate_drum_rnn_midi_sequence(args)

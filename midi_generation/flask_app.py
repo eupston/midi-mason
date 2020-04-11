@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__)
 
+# type (rythm or melody)
 # rating
 # genre
 # tempo
@@ -11,7 +12,7 @@ app = Flask(__name__)
 # id
 # name
 # Author
-
+# analysis midi content on file upload tempo etc
 
 @app.route('/')
 def index():

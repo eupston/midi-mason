@@ -35,9 +35,9 @@ def upload_file(file_name, bucket="midi-mason", object_name=None):
     except ClientError as e:
         logging.error(e)
         return False
-    return S3_BUCKET + "/" + object_name
+    return S3_BUCKET + object_name
 
 
 if __name__ == '__main__':
-    print(upload_file("../output/client.mid", object_name='midi2/{}'.format("client4.mid")))
+    print(upload_file("../output/client.mid", object_name='midi_test/{}'.format("client4.mid")))
     # client.download_file("midi-mason", "midi/client.mid", '../client2.mid')
