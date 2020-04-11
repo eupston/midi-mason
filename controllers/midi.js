@@ -8,10 +8,9 @@ const {PythonShell} = require('python-shell')
 exports.generateMidiDrums = asyncHandler(async (req, res, next) => {
     let options = {
         mode: 'text',
-        scriptPath: "./midi_generation",
         args:['--num_steps', req.body.num_steps, "--primer_drums", req.body.primer_drums]
     };
-    PythonShell.run('drum_generator.py', options, function (err, results) {
+    PythonShell.run('midi_generation/drum_generator.py', options, function (err, results) {
         if (err) {
             console.log(err)
             return next(new ErrorResponse("Something Went Wrong on the Server", 500));
