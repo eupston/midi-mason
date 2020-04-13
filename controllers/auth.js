@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const User = require("../models/User");
-// const sendEmail = require("../utils/sendEmail");
-const ErrorResponse = require("../Utils/errorResponse");
+// const sendEmail = require("../utils/sendEmail"); //TODO setup node mailer
+const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
 
 // @desc    Register user
@@ -132,10 +132,10 @@ const sendTokenResponse = (user, statusCode, res) => {
 
     res
         .status(statusCode)
-        .cookie("token", token, options)
         .json({
             success: true,
-            token
+            token,
+            userId: user._id.toString()
         });
 };
 

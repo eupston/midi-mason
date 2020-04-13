@@ -32,8 +32,9 @@ const MidiFile = new mongoose.Schema({
         required: true
     },
     author: {
-        type: String,//TODO make this into USER type
-        required: [true, 'Please provide a Author'],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+        // required: [true, 'Please provide a Author'],
     },
     genre: {
         type: String,

@@ -33,14 +33,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/generate_midi', midiRouter);
+app.use('/api/v1/midi', midiRouter);
 
 app.use(errorHandler);
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+      'Access-Control-Allow-Methods',
+      'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+  );
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if(req.method === 'OPTIONS'){
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
