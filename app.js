@@ -10,6 +10,7 @@ const errorHandler = require('./middleware/error');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var midiRouter = require('./routes/midi');
+var authRouter = require('./routes/auth');
 
 // Load environment variables
 dotenv.config({ path: './config/config.env' });
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/generate_midi', midiRouter);
 
 app.use(errorHandler);
