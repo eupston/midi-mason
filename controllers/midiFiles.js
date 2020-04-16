@@ -3,12 +3,23 @@ const asyncHandler = require('../middleware/asyncHandler');
 const MidiFile = require('../models/MidiFile');
 const User = require('../models/User');
 const {PythonShell} = require('python-shell')
+const S3Upload = require("../utils/S3");
 
-// @desc    Creates and stores
-// @route   GET /api/v1/midi/create_midifile
+// @desc    Adds an existing midi file to the DB
+// @route   GET /api/v1/midi/uploadmidifile
 // @access  PUBLIC
-exports.createMidiFile = asyncHandler(async (req, res, next) => {
+exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
 
+    filepath = req.file.originalname;
+    fileBuffer = req.file.buffer;
+
+    const S3_URL = await S3Upload(filepath, fileBuffer).Location;
+    res.status(201)
+        .json({
+            success: true,
+            filename: req.file.originalname,
+            S3_URL: S3_URL
+        });
 });
 
 
@@ -16,7 +27,6 @@ exports.createMidiFile = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/midi/generate_drum_rnn
 // @access  PUBLIC
 exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
-
 
     const user = await User.findById(req.body.userId);
     if(!user){

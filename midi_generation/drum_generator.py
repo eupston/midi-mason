@@ -5,6 +5,7 @@ import subprocess
 from S3 import S3
 from midi_utils import *
 import requests
+from S3.settings import *
 
 def generate_and_upload_drum_rnn_midi_sequence(args):
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -12,7 +13,7 @@ def generate_and_upload_drum_rnn_midi_sequence(args):
     model_dir = os.path.join(current_dir, "assets/MLmodels")
     model_path = os.path.join(model_dir, "drum_kit_rnn.mag")
     if not os.path.exists(model_path):
-        url = "https://midi-mason.s3-us-west-2.amazonaws.com/models/drum_kit_rnn.mag"
+        url = os.path.join(S3_URL, "models", "drum_kit_rnn.mag")
         r = requests.get(url, allow_redirects=True)
         myfile = requests.get(url)
         open(model_path, 'wb').write(myfile.content)

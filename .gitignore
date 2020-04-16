@@ -1,7 +1,7 @@
 
 # config
 config/config.env
-midi_generation/S3/.env
+.env
 
 # dependencies
 /node_modules
@@ -17,6 +17,7 @@ midi_generation/S3/.env
 .env.development.local
 .env.test.local
 .env.production.local
+.env
 
 npm-debug.log*
 yarn-debug.log*
