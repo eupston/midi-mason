@@ -35,7 +35,7 @@ def upload_file(file_name, bucket="midi-mason", object_name=None):
     except ClientError as e:
         logging.error(e)
         return False
-    return S3_BUCKET + object_name
+    return S3_URL + object_name
 
 
 if __name__ == '__main__':

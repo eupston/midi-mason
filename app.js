@@ -6,14 +6,18 @@ var logger = require('morgan');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
+const multer = require('multer');
+const storage = multer.memoryStorage()
+const upload = multer({storage: storage});
+const bodyParser = require('body-parser');
+
+// Load environment variables
+dotenv.config({ path: '.env' });
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var midiRouter = require('./routes/midi');
 var authRouter = require('./routes/auth');
-
-// Load environment variables
-dotenv.config({ path: './config/config.env' });
 
 // Connect to database
 connectDB();
@@ -24,23 +28,43 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// Allow File Upload
+app.use(upload.single('file'));
+
 app.use(logger('dev'));
 app.use(express.json());
+app.use(multer().single())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({extended:false}));
 
 app.use('/', indexRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/generate_midi', midiRouter);
+app.use('/api/v1/midi', midiRouter);
 
 app.use(errorHandler);
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+      'Access-Control-Allow-Methods',
+      'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+  );
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if(req.method === 'OPTIONS'){
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {

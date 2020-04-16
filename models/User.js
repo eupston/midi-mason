@@ -25,6 +25,12 @@ const UserSchema = new mongoose.Schema({
         minlength: 6,
         select: false
     },
+    midifiles: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'MidiFile'
+        }
+    ],
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     createdAt: {
