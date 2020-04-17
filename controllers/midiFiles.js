@@ -4,22 +4,63 @@ const MidiFile = require('../models/MidiFile');
 const User = require('../models/User');
 const {PythonShell} = require('python-shell')
 const S3Upload = require("../utils/S3");
+const fs = require('fs');
 
 // @desc    Adds an existing midi file to the DB
 // @route   GET /api/v1/midi/uploadmidifile
 // @access  PUBLIC
 exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
 
-    filepath = req.file.originalname;
-    fileBuffer = req.file.buffer;
+    filename = req.file.originalname;
+    filepath = req.file.path;
+    const S3_URL = await S3Upload(filename, filepath);
 
-    const S3_URL = await S3Upload(filepath, fileBuffer).Location;
-    res.status(201)
-        .json({
-            success: true,
-            filename: req.file.originalname,
-            S3_URL: S3_URL
-        });
+    const user = await User.findById(req.body.userId);
+    if(!user){
+        return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
+    }
+
+    let options = {
+        mode: 'text',
+        args:['--extract_midi_data', "True", "--midi_file", filepath ]
+    };
+
+
+    PythonShell.run('midi_generation/midi_utils.py', options, async function(err, results) {
+        if (err) {
+            console.log(err)
+            return next(new ErrorResponse("Something Went Wrong extracting Midi data", 500));
+        }
+
+        const midiinfo = {
+            name: req.body.name,
+            type:  "drum",
+            url: S3_URL.Location,
+            tempo: results[1],
+            length: results[2],
+            author: user,
+            genre: req.body.genre,
+            rating: req.body.rating,
+            midi_sequence: results[0],
+            comments: req.body.comments
+        }
+
+        try {
+            const midifile = await MidiFile.create(midiinfo)
+            user.midifiles.push(midifile);
+            await user.save();
+            fs.unlinkSync(filepath); //TODO fix delete file
+            res.status(201)
+                .json({
+                    success: true,
+                    data: midifile
+                });
+        }
+        catch (err){
+            console.log(err)
+            return next(new ErrorResponse(err, 500));
+        }
+    });
 });
 
 

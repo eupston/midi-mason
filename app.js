@@ -7,8 +7,6 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
 const multer = require('multer');
-const storage = multer.memoryStorage()
-const upload = multer({storage: storage});
 const bodyParser = require('body-parser');
 
 // Load environment variables
@@ -28,16 +26,34 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// Allow File Upload
-app.use(upload.single('file'));
+// Allow File Upload and saving
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'midi_generation/output');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  }
+});
 
+const fileFilter = (req, file, cb) => {
+  if (
+      file.mimetype === 'audio/midi'
+  ) {
+    cb(null, true);
+  } else {
+    return cb(new Error('File Type Not Allowed for Upload'), false);
+  }
+};
+
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('file'));
 app.use(logger('dev'));
 app.use(express.json());
-app.use(multer().single())
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/', indexRouter);
 app.use('/api/v1/users', usersRouter);
