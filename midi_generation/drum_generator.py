@@ -29,7 +29,7 @@ def generate_and_upload_drum_rnn_midi_sequence(args):
     latest_file = max(list_of_files, key=os.path.getctime)
     midi_sequence = extract_midi_data_from_midi_file(latest_file)['notes']
     S3.initialize()
-    s3_path = S3.upload_file(latest_file, object_name='midi/{}/{}'.format(args.username.replace(" ","_"), os.path.split(latest_file)[-1]))
+    s3_path = S3.upload_file(latest_file, object_name='midi/{}/{}'.format(args.userId, os.path.split(latest_file)[-1]))
     os.remove(latest_file)
     print(s3_path)
     print(midi_sequence)
@@ -38,6 +38,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Drum RNN Generation')
     parser.add_argument('--num_steps')
     parser.add_argument('--primer_drums')
-    parser.add_argument('--username')
+    parser.add_argument('--userId')
     args = parser.parse_args()
     generate_and_upload_drum_rnn_midi_sequence(args)

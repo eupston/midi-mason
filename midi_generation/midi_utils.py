@@ -1,5 +1,7 @@
 import magenta
 from magenta.music import sequences_lib
+import argparse
+import json
 
 def extract_midi_data_from_midi_file(midifile):
     midi_data = {}
@@ -15,7 +17,6 @@ def extract_midi_data_from_midi_file(midifile):
         serialized_notes.append(current_note)
     midi_data["notes"] = serialized_notes
     midi_data["ticks_per_quarter"] = quantized_sequence.ticks_per_quarter
-    midi_data["time_signature"] =  quantized_sequence.time_signatures[0]
     midi_data["tempo"] =  quantized_sequence.tempos[0].qpm
     midi_data["total_quantized_steps"] = quantized_sequence.total_quantized_steps
     return midi_data
@@ -31,7 +32,23 @@ def convert_midi_data_to_sequence_list(midi_data):
     sequence_list = [tuple(notes) for notes in empty_sequence_list]
     return sequence_list
 
+def main(args):
+    if args.extract_midi_data and args.midi_file:
+        midi_data = extract_midi_data_from_midi_file(args.midi_file)
+        print(midi_data["notes"])
+        print(midi_data["tempo"])
+        print(midi_data["total_quantized_steps"])
+        print(midi_data["ticks_per_quarter"])
+
+    elif args.convert_midi_data_to_sequence and args.midi_data:
+        sequence_list =convert_midi_data_to_sequence_list(args.midi_data)
+        print(sequence_list)
+
 if __name__ == '__main__':
-    midi_file = "output/2020-04-13_155252_1.mid"
-    midi_data =  extract_midi_data_from_midi_file(midi_file)
-    convert_midi_data_to_sequence_list(midi_data)
+    parser = argparse.ArgumentParser(description='Midi Utils')
+    parser.add_argument('--extract_midi_data')
+    parser.add_argument('--convert_midi_data_to_sequence')
+    parser.add_argument('--midi_file')
+    parser.add_argument('--midi_data')
+    args = parser.parse_args()
+    main(args)
