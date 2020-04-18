@@ -4,33 +4,35 @@ const MidiFile = require('../models/MidiFile');
 const User = require('../models/User');
 const {PythonShell} = require('python-shell')
 const S3Upload = require("../utils/S3");
-const fs = require('fs');
+const {deleteFile} = require('../utils/files');
+var path = require('path');
+
+
 
 // @desc    Adds an existing midi file to the DB
-// @route   GET /api/v1/midi/uploadmidifile
+// @route   POST /api/v1/midi/uploadmidifile
 // @access  PUBLIC
 exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
-
-    filename = req.file.originalname;
-    filepath = req.file.path;
-    const S3_URL = await S3Upload(filename, filepath);
-
+    //TODO create function to clean up database entry, S3 entry, and server files if error occurs
     const user = await User.findById(req.body.userId);
     if(!user){
         return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
     }
+
+    filepath = req.file.path;
+    filename = path.join("midi", req.body.userId, req.file.originalname);
 
     let options = {
         mode: 'text',
         args:['--extract_midi_data', "True", "--midi_file", filepath ]
     };
 
-
     PythonShell.run('midi_generation/midi_utils.py', options, async function(err, results) {
         if (err) {
-            console.log(err)
-            return next(new ErrorResponse("Something Went Wrong extracting Midi data", 500));
+            deleteFile(filepath);
+            return next(new ErrorResponse(err, 500));
         }
+        const S3_URL = await S3Upload(filename, filepath);
 
         const midiinfo = {
             name: req.body.name,
@@ -49,7 +51,7 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
             const midifile = await MidiFile.create(midiinfo)
             user.midifiles.push(midifile);
             await user.save();
-            fs.unlinkSync(filepath); //TODO fix delete file
+            deleteFile(filepath);
             res.status(201)
                 .json({
                     success: true,
@@ -57,6 +59,7 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
                 });
         }
         catch (err){
+            deleteFile(filepath);
             console.log(err)
             return next(new ErrorResponse(err, 500));
         }
@@ -65,7 +68,7 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
 
 
 // @desc    Generates Midi drums
-// @route   GET /api/v1/midi/generate_drum_rnn
+// @route   POST /api/v1/midi/generate_drum_rnn
 // @access  PUBLIC
 exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
 
@@ -75,7 +78,7 @@ exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
     }
     let options = {
         mode: 'text',
-        args:['--num_steps', req.body.num_steps, "--primer_drums", req.body.primer_drums, "--username", user.name ]
+        args:['--num_steps', req.body.num_steps, "--primer_drums", req.body.primer_drums, "--userId", user._id ]
     };
     PythonShell.run('midi_generation/drum_generator.py', options, async function(err, results) {
         if (err) {

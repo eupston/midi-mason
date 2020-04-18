@@ -12,11 +12,11 @@ const uploadParams = {
     Body: null,
 };
 
-const S3Upload = (filepath, fileBuffer) => {
+const S3Upload = (filename, filepath) => {
     const params = uploadParams;
     uploadParams.Bucket = process.env.S3_BUCKET_NAME;
-    uploadParams.Key = filepath;
-    uploadParams.Body = fileBuffer;
+    uploadParams.Key = filename;
+    uploadParams.Body = filepath;
     return s3Client.upload(params).promise();
 };
 
