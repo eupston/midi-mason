@@ -7,6 +7,58 @@ const S3Upload = require("../utils/S3");
 const {deleteFile} = require('../utils/files');
 var path = require('path');
 
+// @desc    Gets all midi files available
+// @route   GET /api/v1/midi/
+// @access  PUBLIC
+exports.getMidiFiles = asyncHandler(async (req, res, next) => {
+
+    const reqQuery = { ...req.query };
+    const removeFields = ['limit', 'page'];
+    removeFields.forEach(p => delete reqQuery[p]);
+
+    let queryStr = JSON.stringify(reqQuery);
+    // https://docs.mongodb.com/manual/reference/operator/query/gt/
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => {
+        return `$${match}`;
+    });
+    queryStr = JSON.parse(queryStr)
+
+    // Pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 5;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await MidiFile.countDocuments();
+    const totalFound = await MidiFile.countDocuments(queryStr);
+    const totalPages = Math.ceil(totalFound / limit);
+
+    let midifiles = await MidiFile.find(queryStr).skip(startIndex).limit(limit);
+    const pagination = {};
+
+    if(endIndex < totalFound){
+        pagination.next = {
+            page: page + 1,
+            limit
+        }
+    }
+
+    if (startIndex > 0) {
+        pagination.prev = {
+            page: page - 1,
+            limit
+        }
+    }
+
+    res.status(201)
+        .json({
+            success: true,
+            totalFound: totalFound,
+            total: total,
+            totalPages:totalPages,
+            pagination,
+            data: midifiles
+        });
+});
 
 
 // @desc    Adds an existing midi file to the DB
