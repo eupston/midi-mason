@@ -78,7 +78,6 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
 
     PythonShell.run('midi_generation/midi_utils.py', options, async function(err, results) {
         if (err) {
-            deleteFile(filepath);
             return next(new ErrorResponse(err, 500));
         }
         const S3_URL = await S3Upload(filename, filepath);
@@ -108,13 +107,11 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
                 });
         }
         catch (err){
-            deleteFile(filepath);
             console.log(err)
             return next(new ErrorResponse(err, 500));
         }
     });
 });
-
 
 
 // @desc    Gets midi files available
@@ -194,46 +191,73 @@ exports.getMidiFile = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/midi/:id
 // @access  PUBLIC
 exports.updateMidiFile = asyncHandler(async (req, res, next) => {
-    const midifile = await MidiFile.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    });
-
-    if (!midifile){
-        return next(
-            new ErrorResponse(`Midifile not found in id of ${req.params.id}`,
-                404)
-        );
+    const user = await User.findById(req.body.userId);
+    if(!user){
+        return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
+    }
+    const midifilefound = await MidiFile.findById(req.params.id);
+    if (!midifilefound){
+        return next(new ErrorResponse(`MidiFile not found in id of ${req.params.id}`, 404));
     }
 
-    res
-        .status(200)
-        .json({
-            success: true,
-            data: midifile
+    if(user.midifiles.includes(req.params.id)){
+        const midifile = await MidiFile.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
         });
+
+        if (!midifile){
+            return next(new ErrorResponse(`MidiFile not found in id of ${req.params.id}`, 404));
+        }
+
+        res
+            .status(200)
+            .json({
+                success: true,
+                data: midifile
+            });
+    }
+    else{
+        return next(new ErrorResponse("Not Authorized to Update this Midifile " + req.params.id, 403));
+    }
 });
 
 
 // @desc    Delete a midifile
 // @route   DELETE /api/v1/midi/:id
 // @access  PRIVATE
-exports.deleteUser = asyncHandler(async (req, res, next) => {
+exports.deleteMidiFile = asyncHandler(async (req, res, next) => {
 
-    const midifile = await MidiFile.findByIdAndDelete(req.params.id);
-
-    if (!midifile){
-        return next(
-            new ErrorResponse(`MidiFile not found in id of ${req.params.id}`,
-                404)
-        );
+    const user = await User.findById(req.body.userId);
+    if(!user){
+        return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
     }
-    res
-        .status(200)
-        .json({
-            success: true,
-            data: midifile
-        });
+
+    const midifilefound = await MidiFile.findById(req.params.id);
+    if (!midifilefound){
+        return next(new ErrorResponse(`MidiFile not found in id of ${req.params.id}`, 404));
+    }
+
+    if(user.midifiles.includes(req.params.id)){
+        const midifile = await MidiFile.findByIdAndDelete(req.params.id);
+
+        if (!midifile){
+            return next(new ErrorResponse(`MidiFile not found in id of ${req.params.id}`, 404));
+        }
+
+        user.midifiles.pull(req.params.id);
+        await user.save();
+
+        res
+            .status(200)
+            .json({
+                success: true,
+                data: midifile
+            });
+    }
+    else{
+        return next(new ErrorResponse("Not Authorized to Delete this Midifile " + req.params.id, 403));
+    }
 
 
 });

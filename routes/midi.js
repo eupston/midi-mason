@@ -7,9 +7,9 @@ router.get('/', midiController.getMidiFiles);
 
 router.get('/:id', midiController.getMidiFile);
 
-router.put('/:id', midiController.updateMidiFile);
+router.put('/:id', isAuth, midiController.updateMidiFile);
 
-router.delete('/:id', midiController.deleteUser);
+router.delete('/:id', isAuth, midiController.deleteMidiFile);
 
 router.post('/generate_drum_rnn', isAuth, midiController.generateDrumRNN);
 
