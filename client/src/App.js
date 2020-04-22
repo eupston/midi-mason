@@ -1,9 +1,13 @@
 import React from 'react';
 import './App.css';
-import DrumMachine from "./MyDrumMachine";
-
+import DrumSequencer from "./components/Sequencer/DrumSequencer/DrumSequencer";
+import Grid from "./examples/grid"
 function App() {
-  return (<DrumMachine/>);
+  return (
+      <div>
+        <DrumSequencer/>
+      </div>
+  );
 }
 
 export default App;
