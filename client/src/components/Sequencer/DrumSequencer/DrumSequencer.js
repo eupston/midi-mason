@@ -11,10 +11,11 @@ class DrumSequencer extends Component {
         this.state = {
             bpm: 120,
             volume: -6,
-            start: false,
             totalSteps: 16,
-            totalTracks: 4,
-            pattern: []
+            totalTracks: 8,
+            start: false,
+            pattern: [],
+            drumOrder :['BD', 'CP', 'OH', 'CH']
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -48,7 +49,6 @@ class DrumSequencer extends Component {
         const steps = new Array(this.state.totalSteps).fill(1).map((v, i) => {
             return i;
         });
-        const drumOrder = ['BD', 'CP', 'OH', 'CH'];
         this.drumSeq = new Tone.Sequence((time, step) => {
             const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
             patternCopy.map((track, i) => {
@@ -68,7 +68,7 @@ class DrumSequencer extends Component {
                 patternCopy[i][step] = { triggered: true, activated: activated}
 
                 if (activated) {
-                    this.player.get(drumOrder[i]).start()
+                    this.player.get(this.state.drumOrder[i]).start()
                 }
                 this.setState({pattern: patternCopy});
             })
@@ -118,6 +118,7 @@ class DrumSequencer extends Component {
         }
         else{
             Tone.Transport.stop()
+            Tone.Transport.clear()
             this.drumSeq.stop()
             this.clearTriggers()
         }
