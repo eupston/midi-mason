@@ -12,7 +12,10 @@ const Grid = (props) => (
           row={i + 1}
           activated={props.sequence[i][j]["activated"]}
           triggered={props.sequence[i][j]["triggered"]}
+          hovered={props.sequence[i][j]["hovered"]}
           onClick={() => props.toggleStep(i, j)}
+          onMouseOver={() => props.hoverStep(i, j)}
+          onMouseLeave={() => props.hoverOffStep(i, j)}
         />
       ))
     )}

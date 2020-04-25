@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
 import Grid from '../Grid/grid';
+import classes from './drumseqencer.module.css';
 
 class DrumSequencer extends Component {
 
@@ -8,10 +9,10 @@ class DrumSequencer extends Component {
         super(props);
 
         this.state = {
-            bpm: 70,
+            bpm: 120,
             volume: -6,
             start: false,
-            totalSteps: 8,
+            totalSteps: 16,
             totalTracks: 4,
             pattern: []
         };
@@ -34,13 +35,20 @@ class DrumSequencer extends Component {
                 .fill({ triggered: false, activated: false }));
         this.setState({pattern:pattern})
     }
-    //TODO change step count while playing
+    componentDidUpdate(prevProps, prevState){
+        const patternHasChanged = prevState.totalSteps !== this.state.totalSteps;
+        if(patternHasChanged) {
+            Tone.Transport.cancel()
+            this.clearTriggers()
+            this.startSequencer()
+        }
+    }
+
     startSequencer = () => {
-        const steps = Array(this.state.totalSteps).fill(1).map((v, i) => {
+        const steps = new Array(this.state.totalSteps).fill(1).map((v, i) => {
             return i;
         });
         const drumOrder = ['BD', 'CP', 'OH', 'CH'];
-
         this.drumSeq = new Tone.Sequence((time, step) => {
             const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
             patternCopy.map((track, i) => {
@@ -81,10 +89,24 @@ class DrumSequencer extends Component {
         this.setState({pattern: patternUpdated});
     }
 
-    toggleStep = (line, step) => {
+    handleToggleStep = (line, step) => {
         const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
         const { triggered, activated } = patternCopy[line][step];
         patternCopy[line][step] = { triggered, activated: !activated };
+        this.setState({pattern: patternCopy});
+    };
+
+    handleHoverOnStep = (line, step) => {
+        const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
+        const { triggered, activated } = patternCopy[line][step];
+        patternCopy[line][step] = { triggered, activated, hovered: true};
+        this.setState({pattern: patternCopy});
+    };
+
+    handleHoverOffStep = (line, step) => {
+        const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
+        const { triggered, activated } = patternCopy[line][step];
+        patternCopy[line][step] = { triggered, activated, hovered: false};
         this.setState({pattern: patternCopy});
     };
 
@@ -92,7 +114,7 @@ class DrumSequencer extends Component {
         this.setState({start:!this.state.start})
         if(!this.state.start) {
             this.startSequencer()
-            Tone.Transport.start("+0.2")
+            Tone.Transport.start()
         }
         else{
             Tone.Transport.stop()
@@ -104,6 +126,15 @@ class DrumSequencer extends Component {
     handleStepCountChange = (e) => {
         const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
         const new_steps = parseInt(e.target.value);
+        console.log(new_steps)
+        if(new_steps < 1 || new_steps > 64 ){
+            return false
+        }
+        else if (isNaN(new_steps)){
+            this.setState({totalSteps: 1});
+            return false
+        }
+
         const current_steps = patternCopy[0].length;
         const patternUpdated = patternCopy.map(track => {
             const trackCopy = JSON.parse(JSON.stringify(track));
@@ -115,19 +146,41 @@ class DrumSequencer extends Component {
             }
             return trackCopy
         })
-        console.log(patternUpdated)
         this.setState({totalSteps: new_steps, pattern: patternUpdated});
+    }
+
+    handleTempoChange = (e) => {
+        const new_bpm = parseInt(e.target.value);
+
+        if(new_bpm < 20 || new_bpm > 300 ){
+            return
+        }
+        Tone.Transport.bpm.value = new_bpm;
+        this.setState({bpm: new_bpm});
     }
 
     render() {
         return (
-            <div>
-                <p>Drum Sequencer</p>
-                <button onClick={this.handleStartStop}>Start</button>
-                <input type="number" value={this.state.totalSteps} onChange={this.handleStepCountChange}/>
+            <div className={classes.DrumSequencer}>
+                <div className={classes.Transport}>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <button type="button" onClick={this.handleStartStop}>{!this.state.start ? "Play" : "Stop"}</button>
+                    </div>
+                    <div className={classes.TransportItem}>
+                        <label>Total Steps</label>
+                        <input type="number" value={this.state.totalSteps} onChange={this.handleStepCountChange}/>
+                    </div>
+                    <div className={classes.TransportItem}>
+                        <label>BPM</label>
+                        <input type="number" value={this.state.bpm} onChange={this.handleTempoChange}/>
+                    </div>
+                </div>
                 <Grid
                     sequence={this.state.pattern}
-                    toggleStep={this.toggleStep}
+                    toggleStep={this.handleToggleStep}
+                    hoverStep={this.handleHoverOnStep}
+                    hoverOffStep={this.handleHoverOffStep}
                     totalTracks={this.state.totalTracks}
                     totalSteps={this.state.totalSteps}
                 />
