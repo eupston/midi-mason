@@ -37,18 +37,7 @@ const Cell = styled.div.attrs(({ activated, triggered, hovered }) => ({
   grid-row: ${props => props.row};
   margin: 7px;
   transition:background .1s ease;
-  &:hover {
-    background: red; 
-  }
 `;
 
-
-// const Cell = () => {
-//   return (
-//       <div className={classes.Cell}>
-//
-//       </div>
-//   );
-// };
 
 export default Cell;

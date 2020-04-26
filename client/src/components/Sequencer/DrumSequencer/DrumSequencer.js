@@ -2,19 +2,20 @@ import React, { Component } from 'react';
 import Tone from 'tone';
 import Grid from '../Grid/grid';
 import classes from './drumseqencer.module.css';
+import {connect} from 'react-redux';
 
 class DrumSequencer extends Component {
 
     constructor(props) {
         super(props);
-
+        console.log(props)
         this.state = {
-            bpm: 120,
+            bpm: props.bpm,
             volume: -6,
-            totalSteps: 16,
+            totalSteps: props.totalSteps,
             totalTracks: 8,
             start: false,
-            pattern: [],
+            pattern: props.pattern,
             drumOrder :['BD', 'CP', 'OH', 'CH']
         };
 
@@ -31,10 +32,12 @@ class DrumSequencer extends Component {
     }
 
     componentDidMount(){
-        const pattern = Array(this.state.totalTracks)
-            .fill(new Array(this.state.totalSteps)
-                .fill({ triggered: false, activated: false }));
-        this.setState({pattern:pattern})
+        if(this.state.pattern.length < 1) {
+            const pattern = Array(this.state.totalTracks)
+                .fill(new Array(this.state.totalSteps)
+                    .fill({triggered: false, activated: false}));
+            this.setState({pattern: pattern})
+        }
     }
     componentDidUpdate(prevProps, prevState){
         const patternHasChanged = prevState.totalSteps !== this.state.totalSteps;
@@ -50,6 +53,7 @@ class DrumSequencer extends Component {
             return i;
         });
         this.drumSeq = new Tone.Sequence((time, step) => {
+
             const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
             patternCopy.map((track, i) => {
                 const activated = track[step]['activated'];
@@ -190,5 +194,12 @@ class DrumSequencer extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        bpm: state.midi.bpm,
+        totalSteps: state.midi.totalSteps,
+        pattern: state.midi.pattern,
+    }
+};
 
-export default DrumSequencer;
+export default connect(mapStateToProps)(DrumSequencer);

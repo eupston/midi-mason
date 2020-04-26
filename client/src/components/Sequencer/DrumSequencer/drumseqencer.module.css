@@ -32,6 +32,7 @@
     border: 2px solid transparent;
     width: 155px;
 }
+.MidiCard button:hover,
 .DrumSequencer button:active{
     color: #0087ff;
     border: 2px solid #0087ff;
