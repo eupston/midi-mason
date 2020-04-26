@@ -8,7 +8,7 @@ class DrumSequencer extends Component {
 
     constructor(props) {
         super(props);
-        console.log(props)
+
         this.state = {
             bpm: props.bpm,
             volume: -6,
@@ -16,7 +16,7 @@ class DrumSequencer extends Component {
             totalTracks: 8,
             start: false,
             pattern: props.pattern,
-            drumOrder :['BD', 'CP', 'OH', 'CH']
+            drumOrder :['BD', 'CP', 'OH', 'S1', "S2", "TM", "TH", "RD"]
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -24,10 +24,14 @@ class DrumSequencer extends Component {
 
         this.player = new Tone.Players(
             {
-                BD: "./audio/kick.wav",
-                CP: "./audio/clap.wav",
-                OH: "./audio/hh_open.wav",
-                CH: "./audio/hh_closed.wav"
+                BD: "./audio/kit_1/kick.wav",
+                CP: "./audio/kit_1/clap.wav",
+                OH: "./audio/kit_1/hh_open.wav",
+                S1: "./audio/kit_1/hh_closed.wav",
+                S2: "./audio/kit_1/snare1.wav",
+                TM: "./audio/kit_1/tom_mid.wav",
+                TH: "./audio/kit_1/tom_hi.wav",
+                RD: "./audio/kit_1/ride.wav"
             }).toMaster()
     }
 
@@ -53,7 +57,7 @@ class DrumSequencer extends Component {
             return i;
         });
         this.drumSeq = new Tone.Sequence((time, step) => {
-
+            //TODO fix last step not clearing trigger
             const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
             patternCopy.map((track, i) => {
                 const activated = track[step]['activated'];
@@ -74,8 +78,8 @@ class DrumSequencer extends Component {
                 if (activated) {
                     this.player.get(this.state.drumOrder[i]).start()
                 }
-                this.setState({pattern: patternCopy});
             })
+            this.setState({pattern: patternCopy});
 
         }, steps, "16n");
         this.drumSeq.loop = true;
