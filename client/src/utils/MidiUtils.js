@@ -14,3 +14,26 @@ export const convertMidiSequenceToPattern = (midiSeq, totalSteps) => {
     })
     return pattern;
 };
+
+export const convertPatternToMidiSequence = (pattern) => {
+    const trackMidiMapping = { 0:36, 1:37, 2:38, 3:39, 4:40, 5:42, 6:46, 7:49 }
+    const midi_sequence = [];
+    pattern.map((track, track_num) => {
+         track.map((step, step_num) => {
+            const midi_info_step = {}
+            if(step['activated']){
+                midi_info_step['pitch'] = trackMidiMapping[track_num]
+                midi_info_step['velocity'] = 100
+                midi_info_step['quantized_start_step'] = step_num
+                midi_sequence.push(midi_info_step)
+            }
+        })
+    })
+    return midi_sequence;
+};
+
+
+
+
+
+

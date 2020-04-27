@@ -3,6 +3,8 @@ import Tone from 'tone';
 import Grid from '../Grid/grid';
 import classes from './drumseqencer.module.css';
 import {connect} from 'react-redux';
+import {createMidiFile} from "../../../utils/MidiQueries";
+import {convertPatternToMidiSequence} from "../../../utils/MidiUtils";
 
 class DrumSequencer extends Component {
 
@@ -167,8 +169,22 @@ class DrumSequencer extends Component {
         this.setState({bpm: new_bpm});
     }
 
-    handleSavePattern = () => {
+    handleSavePattern = async () => {
+        Tone.Transport.stop()
+        Tone.Transport.clear()
+        const midi_sequence = convertPatternToMidiSequence(this.state.pattern);
 
+        const request_body = {
+            "userId":"5e93b2904f3fdc17843e14b2",
+            "midi_sequence":midi_sequence,
+            "length": this.state.totalSteps,
+            "tempo": this.state.bpm,
+            "genre": "electro",
+            "rating": 5,
+            "name": "new beat from react"
+        }
+        const data = await createMidiFile(request_body);
+        console.log(data)
     }
 
     render() {

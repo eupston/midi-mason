@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MidiCard from "./MidiCard/MidiCard";
-import MidiQuery from "../../../utils/MidiQuery";
+import {getMidiFiles} from "../../../utils/MidiQueries";
 import classes from './midicards.module.css';
 
 class MidiCards extends Component {
@@ -9,7 +9,11 @@ class MidiCards extends Component {
     }
 
     async componentDidMount() {
-        const data = await MidiQuery();
+        const params = {
+            limit: 50
+        };
+
+        const data = await getMidiFiles(params);
         if(data){
             this.setState({midiFiles:data})
         }

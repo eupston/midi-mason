@@ -5,7 +5,7 @@ const {isAuth}= require('../middleware/auth');
 
 router.get('/', midiController.getMidiFiles);
 
-router.post('/', isAuth, midiController.createMidiFile);
+router.post('/', midiController.createMidiFile);
 
 router.get('/:id', midiController.getMidiFile);
 

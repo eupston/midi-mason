@@ -124,7 +124,6 @@ exports.createMidiFile = asyncHandler(async (req, res, next) => {
     if(!user){
         return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
     }
-
     let options = {
         mode: 'text',
         args:[
@@ -174,10 +173,7 @@ exports.createMidiFile = asyncHandler(async (req, res, next) => {
             console.log(err)
             return next(new ErrorResponse(err, 500));
         }
-
     })
-
-
 });
 
 
