@@ -17,8 +17,7 @@ class MidiCard extends Component {
     }
 
     handlePlayDrumSequencer = () => {
-        const parsedSeq = JSON.parse(this.state.seq.replace(/\'/g,"\""));
-        const pattern = convertMidiSequenceToPattern(parsedSeq, this.state.length);
+        const pattern = convertMidiSequenceToPattern(this.state.seq, this.state.length);
         const midiData = {
             bpm : this.state.tempo,
             totalSteps: this.state.length,

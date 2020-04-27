@@ -46,7 +46,7 @@ const MidiFile = new mongoose.Schema({
         max: 5
     },
     midi_sequence:{
-        type: String,
+        type: Array,
     },
     comments: {
         type: String,

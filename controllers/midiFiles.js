@@ -6,6 +6,7 @@ const {PythonShell} = require('python-shell')
 const S3Upload = require("../utils/S3");
 const {deleteFile} = require('../utils/files');
 var path = require('path');
+const fs = require('fs');
 
 
 
@@ -20,7 +21,7 @@ exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
     }
     let options = {
         mode: 'text',
-        args:['--num_steps', req.body.num_steps, "--primer_drums", req.body.primer_drums, "--userId", user._id ]
+        args:['--num_steps', req.body.length, "--primer_drums", req.body.primer_drums, "--userId", user._id ]
     };
     PythonShell.run('midi_generation/drum_generator.py', options, async function(err, results) {
         if (err) {
@@ -28,13 +29,13 @@ exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
             return next(new ErrorResponse("Something Went Wrong Generating Midi File", 500));
         }
         const S3_URL = results[0];
-        const midi_sequence = results[1];
+        const midi_sequence = JSON.parse(results[1].replace(/\'/g,"\""));
         const midiinfo = {
             name: req.body.name,
             type:  "drum",
             url: S3_URL,
             tempo: req.body.tempo,
-            length: req.body.num_steps,
+            length: req.body.length,
             author: user,
             genre: req.body.genre,
             rating: req.body.rating,
@@ -78,9 +79,11 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
 
     PythonShell.run('midi_generation/midi_utils.py', options, async function(err, results) {
         if (err) {
+            console.log(err)
             return next(new ErrorResponse(err, 500));
         }
         const S3_URL = await S3Upload(filename, filepath);
+        const midi_sequence = JSON.parse(results[0].replace(/\'/g,"\""));
 
         const midiinfo = {
             name: req.body.name,
@@ -91,7 +94,7 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
             author: user,
             genre: req.body.genre,
             rating: req.body.rating,
-            midi_sequence: results[0],
+            midi_sequence: midi_sequence,
             comments: req.body.comments
         }
 
@@ -111,6 +114,70 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
             return next(new ErrorResponse(err, 500));
         }
     });
+});
+
+// @desc    Creates a midi file
+// @route   POST /api/v1/midi
+// @access  PUBLIC
+exports.createMidiFile = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.body.userId);
+    if(!user){
+        return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
+    }
+
+    let options = {
+        mode: 'text',
+        args:[
+            '--note_sequence_to_midi_file', "True",
+            "--note_sequence", JSON.stringify(req.body.midi_sequence),
+            "--tempo", req.body.tempo,
+            "--length", req.body.length,
+            '--output_path', "midi_generation/output"
+        ]
+    };
+
+    PythonShell.run('midi_generation/midi_utils.py', options, async function(err, results) {
+        if (err) {
+            console.log(err)
+            return next(new ErrorResponse(err, 500));
+        }
+
+        const filepath =  results[0];
+        const file_content = fs.readFileSync(filepath);
+        const filename = path.join("midi", req.body.userId, path.basename(filepath));
+
+        const S3_URL = await S3Upload(filename, file_content);
+        const midiinfo = {
+            name: req.body.name,
+            type:  "drum",
+            url: S3_URL.Location,
+            tempo: req.body.tempo,
+            length: req.body.length,
+            author: user,
+            genre: req.body.genre,
+            rating: req.body.rating,
+            midi_sequence: req.body.midi_sequence,
+            comments: req.body.comments
+        }
+        try {
+            const midifile = await MidiFile.create(midiinfo)
+            user.midifiles.push(midifile);
+            await user.save();
+            deleteFile(filepath);
+            res.status(201)
+                .json({
+                    success: true,
+                    data: midifile
+                });
+        }
+        catch (err){
+            console.log(err)
+            return next(new ErrorResponse(err, 500));
+        }
+
+    })
+
+
 });
 
 

@@ -57,7 +57,6 @@ class DrumSequencer extends Component {
             return i;
         });
         this.drumSeq = new Tone.Sequence((time, step) => {
-            //TODO fix last step not clearing trigger
             const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
             patternCopy.map((track, i) => {
                 const activated = track[step]['activated'];
@@ -168,6 +167,10 @@ class DrumSequencer extends Component {
         this.setState({bpm: new_bpm});
     }
 
+    handleSavePattern = () => {
+
+    }
+
     render() {
         return (
             <div className={classes.DrumSequencer}>
@@ -183,6 +186,10 @@ class DrumSequencer extends Component {
                     <div className={classes.TransportItem}>
                         <label>BPM</label>
                         <input type="number" value={this.state.bpm} onChange={this.handleTempoChange}/>
+                    </div>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <button type="button" onClick={this.handleSavePattern}>Save</button>
                     </div>
                 </div>
                 <Grid
