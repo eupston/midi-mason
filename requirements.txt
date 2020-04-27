@@ -1,3 +1,4 @@
 git+git://github.com/eupston/magenta.git
 python-dotenv==0.12.0
 boto3==1.12.38
+MIDIUtil==1.2.1

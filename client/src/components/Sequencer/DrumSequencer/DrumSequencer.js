@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import Tone from 'tone';
 import Grid from '../Grid/grid';
 import classes from './drumseqencer.module.css';
+import {connect} from 'react-redux';
+import {createMidiFile} from "../../../utils/MidiQueries";
+import {convertPatternToMidiSequence} from "../../../utils/MidiUtils";
 
 class DrumSequencer extends Component {
 
@@ -9,12 +12,13 @@ class DrumSequencer extends Component {
         super(props);
 
         this.state = {
-            bpm: 120,
+            bpm: props.bpm,
             volume: -6,
+            totalSteps: props.totalSteps,
+            totalTracks: 8,
             start: false,
-            totalSteps: 16,
-            totalTracks: 4,
-            pattern: []
+            pattern: props.pattern,
+            drumOrder :['BD', 'CP', 'OH', 'S1', "S2", "TM", "TH", "RD"]
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -22,18 +26,24 @@ class DrumSequencer extends Component {
 
         this.player = new Tone.Players(
             {
-                BD: "./audio/kick.wav",
-                CP: "./audio/clap.wav",
-                OH: "./audio/hh_open.wav",
-                CH: "./audio/hh_closed.wav"
+                BD: "./audio/kit_1/kick.wav",
+                CP: "./audio/kit_1/clap.wav",
+                OH: "./audio/kit_1/hh_open.wav",
+                S1: "./audio/kit_1/hh_closed.wav",
+                S2: "./audio/kit_1/snare1.wav",
+                TM: "./audio/kit_1/tom_mid.wav",
+                TH: "./audio/kit_1/tom_hi.wav",
+                RD: "./audio/kit_1/ride.wav"
             }).toMaster()
     }
 
     componentDidMount(){
-        const pattern = Array(this.state.totalTracks)
-            .fill(new Array(this.state.totalSteps)
-                .fill({ triggered: false, activated: false }));
-        this.setState({pattern:pattern})
+        if(this.state.pattern.length < 1) {
+            const pattern = Array(this.state.totalTracks)
+                .fill(new Array(this.state.totalSteps)
+                    .fill({triggered: false, activated: false}));
+            this.setState({pattern: pattern})
+        }
     }
     componentDidUpdate(prevProps, prevState){
         const patternHasChanged = prevState.totalSteps !== this.state.totalSteps;
@@ -48,7 +58,6 @@ class DrumSequencer extends Component {
         const steps = new Array(this.state.totalSteps).fill(1).map((v, i) => {
             return i;
         });
-        const drumOrder = ['BD', 'CP', 'OH', 'CH'];
         this.drumSeq = new Tone.Sequence((time, step) => {
             const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
             patternCopy.map((track, i) => {
@@ -68,10 +77,10 @@ class DrumSequencer extends Component {
                 patternCopy[i][step] = { triggered: true, activated: activated}
 
                 if (activated) {
-                    this.player.get(drumOrder[i]).start()
+                    this.player.get(this.state.drumOrder[i]).start()
                 }
-                this.setState({pattern: patternCopy});
             })
+            this.setState({pattern: patternCopy});
 
         }, steps, "16n");
         this.drumSeq.loop = true;
@@ -118,6 +127,7 @@ class DrumSequencer extends Component {
         }
         else{
             Tone.Transport.stop()
+            Tone.Transport.clear()
             this.drumSeq.stop()
             this.clearTriggers()
         }
@@ -159,6 +169,24 @@ class DrumSequencer extends Component {
         this.setState({bpm: new_bpm});
     }
 
+    handleSavePattern = async () => {
+        Tone.Transport.stop()
+        Tone.Transport.clear()
+        const midi_sequence = convertPatternToMidiSequence(this.state.pattern);
+
+        const request_body = {
+            "userId":"5e93b2904f3fdc17843e14b2",
+            "midi_sequence":midi_sequence,
+            "length": this.state.totalSteps,
+            "tempo": this.state.bpm,
+            "genre": "electro",
+            "rating": 5,
+            "name": "new beat from react"
+        }
+        const data = await createMidiFile(request_body);
+        console.log(data)
+    }
+
     render() {
         return (
             <div className={classes.DrumSequencer}>
@@ -175,6 +203,10 @@ class DrumSequencer extends Component {
                         <label>BPM</label>
                         <input type="number" value={this.state.bpm} onChange={this.handleTempoChange}/>
                     </div>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <button type="button" onClick={this.handleSavePattern}>Save</button>
+                    </div>
                 </div>
                 <Grid
                     sequence={this.state.pattern}
@@ -189,5 +221,12 @@ class DrumSequencer extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        bpm: state.midi.bpm,
+        totalSteps: state.midi.totalSteps,
+        pattern: state.midi.pattern,
+    }
+};
 
-export default DrumSequencer;
+export default connect(mapStateToProps)(DrumSequencer);
