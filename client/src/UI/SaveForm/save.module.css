@@ -1,0 +1,50 @@
+.SaveForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    color: gray;
+}
+.SaveForm form {
+    width: 60%;
+    min-width:400px;
+}
+.SaveForm a{
+    text-decoration: none;
+    color: #36363c;
+}
+.SaveForm button {
+    margin-top: 20px;
+    margin-left: 0px;
+    width: 40%;
+    height: 20%;
+    min-height: 40px;
+    margin-bottom: 20px;
+}
+
+
+.SaveForm label {
+    margin-top: 20px;
+    color: #fff;
+
+}
+
+.SaveForm input {
+    background: #36363c;
+    color: white;
+
+}
+
+.SaveForm input:focus {
+    outline:none;
+    border:none;
+
+}
+
+.Error {
+    color: red;
+}
+.Success {
+    color: green;
+}
+
