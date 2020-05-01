@@ -291,9 +291,9 @@ exports.updateMidiFile = asyncHandler(async (req, res, next) => {
 // @access  PRIVATE
 exports.deleteMidiFile = asyncHandler(async (req, res, next) => {
 
-    const user = await User.findById(req.body.userId);
+    const user = await User.findById(req.query.userId); // get from session
     if(!user){
-        return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
+        return next(new ErrorResponse("Could not Find User Id: " + req.query.userId, 404));
     }
 
     const midifilefound = await MidiFile.findById(req.params.id);

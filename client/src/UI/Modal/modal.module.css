@@ -1,0 +1,35 @@
+.Modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ModalBody {
+    align-self: center;
+    background-color: #28282c;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.Modal h4{
+    text-align: center;
+    color: gray;
+}
+
+.Modal h6{
+    text-align: center;
+    color: gray;
+    margin-top: 20px;
+}
+
+.Modal p{
+    color:gray;
+    text-align: center;
+    font-size: 12px;
+    margin: 10px;
+}
+
+.Modal a:hover{
+    text-decoration: none;
+    color: #36454f;
+}

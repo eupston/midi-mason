@@ -21,3 +21,14 @@ export const createMidiFile = async (mididata) => {
     )
 };
 
+
+export const deleteMidiFile = async (id, userId) => {
+    return (
+        axios.delete('/api/v1/midi/'+ id + "?userId=" + userId)
+            .then(res => {
+                return res.data.data;
+            })
+            .catch(err => console.log(err))
+    )
+};
+

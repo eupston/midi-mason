@@ -5,6 +5,9 @@ import classes from './drumseqencer.module.css';
 import {connect} from 'react-redux';
 import {createMidiFile} from "../../../utils/MidiQueries";
 import {convertPatternToMidiSequence} from "../../../utils/MidiUtils";
+import Modal from "../../../UI/Modal/Modal";
+import SaveForm from "../../../UI/SaveForm/SaveForm";
+import Spinner from "../../../UI/Spinner/Spinner";
 
 class DrumSequencer extends Component {
 
@@ -18,7 +21,9 @@ class DrumSequencer extends Component {
             totalTracks: 8,
             start: false,
             pattern: props.pattern,
-            drumOrder :['BD', 'CP', 'OH', 'S1', "S2", "TM", "TH", "RD"]
+            drumOrder :['BD', 'CP', 'OH', 'S1', "S2", "TM", "TH", "RD"],
+            showModal: false,
+            isSaving: false,
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -169,23 +174,35 @@ class DrumSequencer extends Component {
         this.setState({bpm: new_bpm});
     }
 
-    handleSavePattern = async () => {
+    handleSavePattern = async (e, formData) => {
+        e.preventDefault();
         Tone.Transport.stop()
         Tone.Transport.clear()
+        this.setState({isSaving:true});
         const midi_sequence = convertPatternToMidiSequence(this.state.pattern);
 
         const request_body = {
-            "userId":"5e93b2904f3fdc17843e14b2",
-            "midi_sequence":midi_sequence,
+            "userId": this.props.userId,
+            "midi_sequence": midi_sequence,
             "length": this.state.totalSteps,
             "tempo": this.state.bpm,
-            "genre": "electro",
+            "genre": formData.genre,
             "rating": 5,
-            "name": "new beat from react"
+            "name": formData.name
         }
         const data = await createMidiFile(request_body);
         console.log(data)
+        this.handleModalHide();
+        this.setState({isSaving:false});
     }
+
+    handleModalShow = () => {
+        this.setState({showModal:true});
+    };
+
+    handleModalHide = () => {
+        this.setState({showModal:false});
+    };
 
     render() {
         return (
@@ -205,7 +222,7 @@ class DrumSequencer extends Component {
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
-                        <button type="button" onClick={this.handleSavePattern}>Save</button>
+                        <button type="button" onClick={this.handleModalShow}>Save</button>
                     </div>
                 </div>
                 <Grid
@@ -216,6 +233,16 @@ class DrumSequencer extends Component {
                     totalTracks={this.state.totalTracks}
                     totalSteps={this.state.totalSteps}
                 />
+                <Modal
+                    show={this.state.showModal}
+                    onHide={this.handleModalHide}
+                    title="Pattern Information" {...this.props}>
+                    {!this.state.isSaving ?
+                    <SaveForm onSavePattern={this.handleSavePattern}/>
+                    :
+                    <Spinner text={"Saving..."}/>
+                    }
+                </Modal>
             </div>
         );
     }
@@ -226,6 +253,7 @@ const mapStateToProps = state => {
         bpm: state.midi.bpm,
         totalSteps: state.midi.totalSteps,
         pattern: state.midi.pattern,
+        userId: state.auth.userId
     }
 };
 

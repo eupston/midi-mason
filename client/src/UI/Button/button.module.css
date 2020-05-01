@@ -1,0 +1,46 @@
+.Button{
+    color: #36454f;
+    border: 1px solid #36454f;
+    width: 80%;
+    height:10%;
+    /*margin: 20px;*/
+    outline: none;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.Button:hover,
+.Button:active{
+    background-color: #0087ff;
+    border: 1px solid #0087ff;
+    color: white;
+}
+
+.Button:focus {
+    outline: none
+}
+
+.InvertedButton{
+    color: #fff;
+    border: 2px solid transparent;
+    width: 80%;
+    height:10%;
+    margin: 20px;
+    outline: none;
+    border-radius: 5px;
+    background-color: #36363c;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);
+
+}
+
+.InvertedButton:hover,
+.InvertedButton:active{
+    color: #0087ff;
+    border: 2px solid #0087ff;
+}
+.InvertedButton:focus {
+    outline: none
+}
