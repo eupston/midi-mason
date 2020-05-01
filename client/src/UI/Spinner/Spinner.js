@@ -1,9 +1,12 @@
 import React from 'react';
 import "./spinner.css";
 
-const Spinner = () => {
+const Spinner = (props) => {
     return (
-        <div className="loader">Loading...</div>
+        <div className="spinner">
+            <div className="loader"/>
+            <h5>{props.text}</h5>
+        </div>
     );
 };
 

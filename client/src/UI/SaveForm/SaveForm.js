@@ -45,30 +45,29 @@ class SaveForm extends Component {
                     })}>
                         <label>Pattern Name</label>
                         <input
-                            id="name"
-                            type="name"
-                            control="input"
-                            className="form-control"
-                            placeholder="Enter name"
-                            value={this.state.saveForm['name'].value}
-                            onChange={this.inputChangeHandler}
-                            required={true}
+                        id="name"
+                        type="name"
+                        control="input"
+                        className="form-control"
+                        placeholder="Enter name"
+                        value={this.state.saveForm['name'].value}
+                        onChange={this.inputChangeHandler}
+                        required={true}
                         />
                         <label>Genre</label>
                         <input
-                            id="genre"
-                            type="genre"
-                            control="input"
-                            className="form-control"
-                            placeholder="Genre"
-                            value={this.state.saveForm['genre'].value}
-                            onChange={this.inputChangeHandler}
-                            required={true}
+                        id="genre"
+                        type="genre"
+                        control="input"
+                        className="form-control"
+                        placeholder="Genre"
+                        value={this.state.saveForm['genre'].value}
+                        onChange={this.inputChangeHandler}
+                        required={true}
                         />
 
                         <br/>
-                        <Button type={'submit'} title={'Save Pattern'} Inverted={true} />
-                        {/*<Spinner/>*/}
+                        <Button type={'submit'} title={'Save Pattern'} Inverted={true}/>
                     </form>
                 </div>
             </React.Fragment>

@@ -12,6 +12,15 @@
     -ms-transform: translateZ(0);
     transform: translateZ(0);
 }
+
+.spinner{
+    display: block;
+    text-align: center;
+    color: #ffffff;
+    width: 60%;
+    min-width:400px;
+}
+
 @-webkit-keyframes load5 {
     0%,
     100% {
