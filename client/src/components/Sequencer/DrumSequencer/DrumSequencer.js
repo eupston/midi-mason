@@ -3,8 +3,8 @@ import Tone from 'tone';
 import Grid from '../Grid/grid';
 import classes from './drumseqencer.module.css';
 import {connect} from 'react-redux';
-import {createMidiFile} from "../../../utils/MidiQueries";
-import {convertPatternToMidiSequence} from "../../../utils/MidiUtils";
+import {createMidiFile, generateDrumRNN} from "../../../utils/MidiQueries";
+import {convertPatternToMidiSequence, convertPatternToPrimerSequence} from "../../../utils/MidiUtils";
 import Modal from "../../../UI/Modal/Modal";
 import SaveForm from "../../../UI/SaveForm/SaveForm";
 import Spinner from "../../../UI/Spinner/Spinner";
@@ -22,8 +22,10 @@ class DrumSequencer extends Component {
             start: false,
             pattern: props.pattern,
             drumOrder :['BD', 'CP', 'OH', 'S1', "S2", "TM", "TH", "RD"],
-            showModal: false,
+            showSaveModal: false,
+            showGeneratingModal: false,
             isSaving: false,
+            isGenerating: false
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -192,17 +194,48 @@ class DrumSequencer extends Component {
         }
         const data = await createMidiFile(request_body);
         console.log(data)
-        this.handleModalHide();
+        this.handleSaveModalHide();
         this.setState({isSaving:false});
     }
 
-    handleModalShow = () => {
-        this.setState({showModal:true});
+    handleSaveModalShow = () => {
+        this.setState({showSaveModal:true});
     };
 
-    handleModalHide = () => {
-        this.setState({showModal:false});
+    handleSaveModalHide = () => {
+        this.setState({showSaveModal:false});
     };
+
+    handleGeneratingModalShow = () => {
+        this.setState({showGeneratingModal:true});
+    };
+
+    handleGeneratingModalHide = () => {
+        this.setState({showGeneratingModal:false});
+    };
+
+    handleAIDrumGeneration = async (e, formData) => {
+        e.preventDefault();
+        Tone.Transport.stop()
+        Tone.Transport.clear()
+        this.setState({isGenerating:true});
+        const primer_sequence_str = convertPatternToPrimerSequence(this.state.pattern);
+
+        const request_body = {
+            "userId": this.props.userId,
+            "primer_drums": primer_sequence_str,
+            "length": this.state.totalSteps*2,
+            "tempo": this.state.bpm,
+            "genre": formData.genre,
+            "rating": 5,
+            "name": formData.name
+        }
+        console.log(request_body)
+        const data = await generateDrumRNN(request_body);
+        console.log(data)
+        this.handleGeneratingModalHide();
+        this.setState({isGenerating:false});
+    }
 
     render() {
         return (
@@ -222,7 +255,11 @@ class DrumSequencer extends Component {
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
-                        <button type="button" onClick={this.handleModalShow}>Save</button>
+                        <button type="button" onClick={this.handleSaveModalShow}>Save</button>
+                    </div>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <button type="button" onClick={this.handleGeneratingModalShow}>Generate AI Drums</button>
                     </div>
                 </div>
                 <Grid
@@ -234,13 +271,23 @@ class DrumSequencer extends Component {
                     totalSteps={this.state.totalSteps}
                 />
                 <Modal
-                    show={this.state.showModal}
-                    onHide={this.handleModalHide}
+                    show={this.state.showSaveModal}
+                    onHide={this.handleSaveModalHide}
                     title="Pattern Information" {...this.props}>
                     {!this.state.isSaving ?
-                    <SaveForm onSavePattern={this.handleSavePattern}/>
+                    <SaveForm onSavePattern={this.handleSavePattern} button_text={"Save Pattern"}/>
                     :
                     <Spinner text={"Saving..."}/>
+                    }
+                </Modal>
+                <Modal
+                    show={this.state.showGeneratingModal}
+                    onHide={this.handleGeneratingModalHide}
+                    title="Pattern Information" {...this.props}>
+                    {!this.state.isGenerating ?
+                        <SaveForm onSavePattern={this.handleAIDrumGeneration}button_text={"Generate AI Beat"}/>
+                        :
+                        <Spinner text={"Generating AI Beat..."} />
                     }
                 </Modal>
             </div>

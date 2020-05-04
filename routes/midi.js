@@ -13,7 +13,7 @@ router.put('/:id', isAuth, midiController.updateMidiFile);
 
 router.delete('/:id', midiController.deleteMidiFile);
 
-router.post('/generate_drum_rnn', isAuth, midiController.generateDrumRNN);
+router.post('/generate_drum_rnn', midiController.generateDrumRNN);
 
 router.post('/uploadmidifile', isAuth, midiController.uploadMidiFile);
 

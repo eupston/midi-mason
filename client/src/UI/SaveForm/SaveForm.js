@@ -67,7 +67,7 @@ class SaveForm extends Component {
                         />
 
                         <br/>
-                        <Button type={'submit'} title={'Save Pattern'} Inverted={true}/>
+                        <Button type={'submit'} title={this.props.button_text} Inverted={true}/>
                     </form>
                 </div>
             </React.Fragment>

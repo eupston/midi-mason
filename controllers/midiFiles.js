@@ -14,7 +14,6 @@ const fs = require('fs');
 // @route   POST /api/v1/midi/generate_drum_rnn
 // @access  PUBLIC
 exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
-
     const user = await User.findById(req.body.userId);
     if(!user){
         return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
@@ -290,7 +289,7 @@ exports.updateMidiFile = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/midi/:id
 // @access  PRIVATE
 exports.deleteMidiFile = asyncHandler(async (req, res, next) => {
-
+    //TODO DELETE midifile off S3
     const user = await User.findById(req.query.userId); // get from session
     if(!user){
         return next(new ErrorResponse("Could not Find User Id: " + req.query.userId, 404));
@@ -321,6 +320,4 @@ exports.deleteMidiFile = asyncHandler(async (req, res, next) => {
     else{
         return next(new ErrorResponse("Not Authorized to Delete this Midifile " + req.params.id, 403));
     }
-
-
 });

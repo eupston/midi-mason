@@ -1,6 +1,7 @@
+//TODO look into midimapping bug
 export const convertMidiSequenceToPattern = (midiSeq, totalSteps) => {
     const totalTracks = 8;
-    const trackMidiMapping = { 36:0, 37:1, 38:2, 39:3, 40:4, 42:5, 46:6, 49:7 }
+    const trackMidiMapping = { 36:0, 37:1, 38:2, 39:3, 42:4, 46:5, 48:6, 49:7 }
     const emptyPattern = Array(totalTracks)
         .fill(new Array(totalSteps)
             .fill({ triggered: false, activated: false }));
@@ -16,7 +17,7 @@ export const convertMidiSequenceToPattern = (midiSeq, totalSteps) => {
 };
 
 export const convertPatternToMidiSequence = (pattern) => {
-    const trackMidiMapping = { 0:36, 1:37, 2:38, 3:39, 4:40, 5:42, 6:46, 7:49 }
+    const trackMidiMapping = { 0:36, 1:37, 2:38, 3:39, 4:42, 5:46, 6:48, 7:49 }
     const midi_sequence = [];
     pattern.map((track, track_num) => {
          track.map((step, step_num) => {
@@ -32,7 +33,26 @@ export const convertPatternToMidiSequence = (pattern) => {
     return midi_sequence;
 };
 
-
+export const convertPatternToPrimerSequence = (pattern) => {
+    const trackMidiMapping = { 0:36, 1:37, 2:38, 3:39, 4:42, 5:46, 6:48, 7:49 }
+    const empty_primer_sequence = Array(pattern[0].length).fill([]);
+    const primer_sequence = JSON.parse(JSON.stringify(empty_primer_sequence));
+    pattern.map((track, track_num) => {
+        track.map((step, step_num) => {
+            if(step['activated']){
+                const pitch = trackMidiMapping[track_num]
+                primer_sequence[step_num].push(pitch);
+            }
+        })
+    })
+    const primer_sequence_str = JSON.stringify(primer_sequence)
+        .replace(/\[/g,"\(")
+        .replace(/\]/g,"\)")
+        .replace(/^\(/,"\[")
+        .replace(/\)$/,"\]")
+        .replace(/\(([0-9][0-9])\)/g, "($1,)")
+    return primer_sequence_str;
+};
 
 
 
