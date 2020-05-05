@@ -18,14 +18,16 @@ class DrumSequencer extends Component {
             bpm: props.bpm,
             volume: -6,
             totalSteps: props.totalSteps,
-            totalTracks: 8,
+            totalTracks: 6,
             start: false,
             pattern: props.pattern,
-            drumOrder :['BD', 'CP', 'OH', 'S1', "S2", "TM", "TH", "RD"],
+            drumOrder :['BD', 'CP', 'OH', 'HC', "S1", "S2", "TL", "TM", "TH", "RD"],
             showSaveModal: false,
             showGeneratingModal: false,
             isSaving: false,
-            isGenerating: false
+            isGenerating: false,
+            maxSteps: 64,
+            generateDisabled:false
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -36,11 +38,13 @@ class DrumSequencer extends Component {
                 BD: "./audio/kit_1/kick.wav",
                 CP: "./audio/kit_1/clap.wav",
                 OH: "./audio/kit_1/hh_open.wav",
-                S1: "./audio/kit_1/hh_closed.wav",
-                S2: "./audio/kit_1/snare1.wav",
+                HC: "./audio/kit_1/hh_closed.wav",
+                S1: "./audio/kit_1/snare1.wav",
+                S2: "./audio/kit_1/snare2.wav",
+                TL: "./audio/kit_1/ride.wav",
                 TM: "./audio/kit_1/tom_mid.wav",
                 TH: "./audio/kit_1/tom_hi.wav",
-                RD: "./audio/kit_1/ride.wav"
+                RD: "./audio/kit_1/ride.wav",
             }).toMaster()
     }
 
@@ -141,6 +145,7 @@ class DrumSequencer extends Component {
     }
 
     handleStepCountChange = (e) => {
+
         const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
         const new_steps = parseInt(e.target.value);
         console.log(new_steps)
@@ -163,13 +168,18 @@ class DrumSequencer extends Component {
             }
             return trackCopy
         })
-        this.setState({totalSteps: new_steps, pattern: patternUpdated});
+
+        let disableGenerateButton = false;
+        if(this.state.totalSteps + 3 > this.state.maxSteps) {
+            disableGenerateButton = true;
+        }
+        this.setState({totalSteps: new_steps, pattern: patternUpdated, generateDisabled:disableGenerateButton});
     }
 
     handleTempoChange = (e) => {
         const new_bpm = parseInt(e.target.value);
 
-        if(new_bpm < 20 || new_bpm > 300 ){
+        if(new_bpm < 20 || new_bpm > 200 ){
             return
         }
         Tone.Transport.bpm.value = new_bpm;
@@ -220,11 +230,10 @@ class DrumSequencer extends Component {
         Tone.Transport.clear()
         this.setState({isGenerating:true});
         const primer_sequence_str = convertPatternToPrimerSequence(this.state.pattern);
-
         const request_body = {
             "userId": this.props.userId,
             "primer_drums": primer_sequence_str,
-            "length": this.state.totalSteps*2,
+            "length": formData.generatedSteps,
             "tempo": this.state.bpm,
             "genre": formData.genre,
             "rating": 5,
@@ -259,7 +268,7 @@ class DrumSequencer extends Component {
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
-                        <button type="button" onClick={this.handleGeneratingModalShow}>Generate AI Drums</button>
+                        <button type="button" onClick={this.handleGeneratingModalShow} disabled={this.state.generateDisabled}>Generate AI Drums</button>
                     </div>
                 </div>
                 <Grid
@@ -275,7 +284,9 @@ class DrumSequencer extends Component {
                     onHide={this.handleSaveModalHide}
                     title="Pattern Information" {...this.props}>
                     {!this.state.isSaving ?
-                    <SaveForm onSavePattern={this.handleSavePattern} button_text={"Save Pattern"}/>
+                    <SaveForm
+                        onSavePattern={this.handleSavePattern}
+                        button_text={"Save Pattern"}/>
                     :
                     <Spinner text={"Saving..."}/>
                     }
@@ -285,7 +296,13 @@ class DrumSequencer extends Component {
                     onHide={this.handleGeneratingModalHide}
                     title="Pattern Information" {...this.props}>
                     {!this.state.isGenerating ?
-                        <SaveForm onSavePattern={this.handleAIDrumGeneration}button_text={"Generate AI Beat"}/>
+                        <SaveForm
+                            onSavePattern={this.handleAIDrumGeneration}
+                            button_text={"Generate AI Beat"}
+                            totalsteps={true}
+                            min={this.state.totalSteps + 3}
+                            max={this.state.maxSteps}
+                        />
                         :
                         <Spinner text={"Generating AI Beat..."} />
                     }
