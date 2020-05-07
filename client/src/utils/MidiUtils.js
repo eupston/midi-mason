@@ -1,7 +1,8 @@
-//TODO look into midimapping bug
+const midiTrackMapping = { 36:0, 38:1, 42:2, 45:3, 46:4, 48:5, 49:6, 50:7, 51:8 }
+const trackMidiMapping = { 0:36, 1:38, 2:42, 3:45, 4:46, 5:48, 6:49, 7:50, 8:51 }
+
 export const convertMidiSequenceToPattern = (midiSeq, totalSteps) => {
-    const totalTracks = 10;
-    const trackMidiMapping = { 36:0, 37:1, 38:2, 39:3, 42:4, 45:5, 46:6, 48:7, 49:8, 50:9 }
+    const totalTracks = 9;
     const emptyPattern = Array(totalTracks)
         .fill(new Array(totalSteps)
             .fill({ triggered: false, activated: false }));
@@ -10,7 +11,7 @@ export const convertMidiSequenceToPattern = (midiSeq, totalSteps) => {
     midiSeq.map(item => {
         const currentStep = item['quantized_start_step'];
         const currentPitch = item['pitch'];
-        const currentTrack = trackMidiMapping[currentPitch];
+        const currentTrack = midiTrackMapping[currentPitch];
         console.log(item)
         pattern[currentTrack][currentStep]['activated'] = true;
     })
@@ -18,7 +19,6 @@ export const convertMidiSequenceToPattern = (midiSeq, totalSteps) => {
 };
 
 export const convertPatternToMidiSequence = (pattern) => {
-    const trackMidiMapping = { 0:36, 1:37, 2:38, 3:39, 4:42, 5:45, 6:46, 7:48, 8:49, 9:50 }
     const midi_sequence = [];
     pattern.map((track, track_num) => {
          track.map((step, step_num) => {
@@ -35,7 +35,6 @@ export const convertPatternToMidiSequence = (pattern) => {
 };
 
 export const convertPatternToPrimerSequence = (pattern) => {
-    const trackMidiMapping = { 0:36, 1:37, 2:38, 3:39, 4:42, 5:45, 6:46, 7:48, 8:49, 9:50 }
     const empty_primer_sequence = Array(pattern[0].length).fill([]);
     const primer_sequence = JSON.parse(JSON.stringify(empty_primer_sequence));
     pattern.map((track, track_num) => {
@@ -47,14 +46,10 @@ export const convertPatternToPrimerSequence = (pattern) => {
         })
     })
     const primer_sequence_str = JSON.stringify(primer_sequence)
-        .replace(/\[/g,"\(")
-        .replace(/\]/g,"\)")
-        .replace(/^\(/,"\[")
-        .replace(/\)$/,"\]")
+        .replace(/\[/g,"(")
+        .replace(/\]/g,")")
+        .replace(/^\(/,"[")
+        .replace(/\)$/,"]")
         .replace(/\(([0-9][0-9])\)/g, "($1,)")
     return primer_sequence_str;
 };
-
-
-
-

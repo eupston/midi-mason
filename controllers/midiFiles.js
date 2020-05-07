@@ -42,7 +42,6 @@ exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
             midi_sequence: midi_sequence,
             comments: req.body.comments
         }
-        //TODO try to limit range on midi pitches for generation
         try {
             let midifile = await MidiFile.create(midiinfo);
             midifile = JSON.parse(JSON.stringify(midifile));

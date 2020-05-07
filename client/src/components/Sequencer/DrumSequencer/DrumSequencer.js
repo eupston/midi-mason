@@ -18,10 +18,10 @@ class DrumSequencer extends Component {
             bpm: props.bpm,
             volume: -6,
             totalSteps: props.totalSteps,
-            totalTracks: 6,
+            totalTracks: 9,
             start: false,
             pattern: props.pattern,
-            drumOrder :['BD', 'CP', 'OH', 'HC', "S1", "S2", "TL", "TM", "TH", "RD"],
+            drumOrder :['BD', 'S1', 'HC', 'OH', "TL", "TM", "TH", "S2", "RD"],
             showSaveModal: false,
             showGeneratingModal: false,
             isSaving: false,
@@ -36,14 +36,13 @@ class DrumSequencer extends Component {
         this.player = new Tone.Players(
             {
                 BD: "./audio/kit_1/kick.wav",
-                CP: "./audio/kit_1/clap.wav",
-                OH: "./audio/kit_1/hh_open.wav",
-                HC: "./audio/kit_1/hh_closed.wav",
                 S1: "./audio/kit_1/snare1.wav",
-                S2: "./audio/kit_1/snare2.wav",
-                TL: "./audio/kit_1/ride.wav",
+                HC: "./audio/kit_1/hh_closed.wav",
+                OH: "./audio/kit_1/hh_open.wav",
+                TL: "./audio/kit_1/tom_low.wav",
                 TM: "./audio/kit_1/tom_mid.wav",
                 TH: "./audio/kit_1/tom_hi.wav",
+                S2: "./audio/kit_1/snare2.wav",
                 RD: "./audio/kit_1/ride.wav",
             }).toMaster()
     }
