@@ -37,6 +37,10 @@
     color: #0087ff;
     border: 2px solid #0087ff;
 }
+.DrumSequencer button:disabled{
+    opacity: 0.5;
+}
+
 
 .Transport {
     display: flex;

@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import classes from './save.module.css';
 import Button from "../Button/Button";
-import Spinner from "../Spinner/Spinner";
-import Modal from "../Modal/Modal";
 
 class SaveForm extends Component {
     state = {
@@ -12,10 +10,17 @@ class SaveForm extends Component {
             },
             genre: {
                 value: '',
+            },
+            generatedSteps: {
+                value: this.props.min
             }
         },
         errors:null,
     };
+
+    onKeyPress = (event) =>{
+        event.preventDefault();
+    }
 
     inputChangeHandler = (event) => {
         const input = event.target.id;
@@ -41,7 +46,8 @@ class SaveForm extends Component {
                 <div className={classes.SaveForm}>
                     <form onSubmit={e => this.props.onSavePattern(e, {
                         name: this.state.saveForm.name.value,
-                        genre: this.state.saveForm.genre.value
+                        genre: this.state.saveForm.genre.value,
+                        generatedSteps: this.state.saveForm.generatedSteps.value
                     })}>
                         <label>Pattern Name</label>
                         <input
@@ -65,9 +71,28 @@ class SaveForm extends Component {
                         onChange={this.inputChangeHandler}
                         required={true}
                         />
-
+                        {this.props.totalsteps ?
+                            <React.Fragment>
+                                <label>Total Step</label>
+                                <input
+                                    id="generatedSteps"
+                                    type="number"
+                                    control="input"
+                                    className="form-control"
+                                    placeholder={this.props.min}
+                                    min={this.props.min}
+                                    max={this.props.max}
+                                    value={this.state.saveForm['generatedSteps'].value}
+                                    onKeyDown={this.onKeyPress.bind(this)}
+                                    onChange={this.inputChangeHandler}
+                                    required="true"
+                                />
+                            </React.Fragment>
+                            :
+                            null
+                        }
                         <br/>
-                        <Button type={'submit'} title={'Save Pattern'} Inverted={true}/>
+                        <Button type={'submit'} title={this.props.button_text} Inverted={true}/>
                     </form>
                 </div>
             </React.Fragment>

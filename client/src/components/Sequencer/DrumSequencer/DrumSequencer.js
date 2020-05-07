@@ -3,8 +3,8 @@ import Tone from 'tone';
 import Grid from '../Grid/grid';
 import classes from './drumseqencer.module.css';
 import {connect} from 'react-redux';
-import {createMidiFile} from "../../../utils/MidiQueries";
-import {convertPatternToMidiSequence} from "../../../utils/MidiUtils";
+import {createMidiFile, generateDrumRNN} from "../../../utils/MidiQueries";
+import {convertPatternToMidiSequence, convertPatternToPrimerSequence} from "../../../utils/MidiUtils";
 import Modal from "../../../UI/Modal/Modal";
 import SaveForm from "../../../UI/SaveForm/SaveForm";
 import Spinner from "../../../UI/Spinner/Spinner";
@@ -18,12 +18,16 @@ class DrumSequencer extends Component {
             bpm: props.bpm,
             volume: -6,
             totalSteps: props.totalSteps,
-            totalTracks: 8,
+            totalTracks: 9,
             start: false,
             pattern: props.pattern,
-            drumOrder :['BD', 'CP', 'OH', 'S1', "S2", "TM", "TH", "RD"],
-            showModal: false,
+            drumOrder :['BD', 'S1', 'HC', 'OH', "TL", "TM", "TH", "S2", "RD"],
+            showSaveModal: false,
+            showGeneratingModal: false,
             isSaving: false,
+            isGenerating: false,
+            maxSteps: 64,
+            generateDisabled:false
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -32,13 +36,14 @@ class DrumSequencer extends Component {
         this.player = new Tone.Players(
             {
                 BD: "./audio/kit_1/kick.wav",
-                CP: "./audio/kit_1/clap.wav",
+                S1: "./audio/kit_1/snare1.wav",
+                HC: "./audio/kit_1/hh_closed.wav",
                 OH: "./audio/kit_1/hh_open.wav",
-                S1: "./audio/kit_1/hh_closed.wav",
-                S2: "./audio/kit_1/snare1.wav",
+                TL: "./audio/kit_1/tom_low.wav",
                 TM: "./audio/kit_1/tom_mid.wav",
                 TH: "./audio/kit_1/tom_hi.wav",
-                RD: "./audio/kit_1/ride.wav"
+                S2: "./audio/kit_1/snare2.wav",
+                RD: "./audio/kit_1/ride.wav",
             }).toMaster()
     }
 
@@ -139,6 +144,7 @@ class DrumSequencer extends Component {
     }
 
     handleStepCountChange = (e) => {
+
         const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
         const new_steps = parseInt(e.target.value);
         console.log(new_steps)
@@ -161,13 +167,18 @@ class DrumSequencer extends Component {
             }
             return trackCopy
         })
-        this.setState({totalSteps: new_steps, pattern: patternUpdated});
+
+        let disableGenerateButton = false;
+        if(this.state.totalSteps + 3 > this.state.maxSteps) {
+            disableGenerateButton = true;
+        }
+        this.setState({totalSteps: new_steps, pattern: patternUpdated, generateDisabled:disableGenerateButton});
     }
 
     handleTempoChange = (e) => {
         const new_bpm = parseInt(e.target.value);
 
-        if(new_bpm < 20 || new_bpm > 300 ){
+        if(new_bpm < 20 || new_bpm > 200 ){
             return
         }
         Tone.Transport.bpm.value = new_bpm;
@@ -192,17 +203,47 @@ class DrumSequencer extends Component {
         }
         const data = await createMidiFile(request_body);
         console.log(data)
-        this.handleModalHide();
+        this.handleSaveModalHide();
         this.setState({isSaving:false});
     }
 
-    handleModalShow = () => {
-        this.setState({showModal:true});
+    handleSaveModalShow = () => {
+        this.setState({showSaveModal:true});
     };
 
-    handleModalHide = () => {
-        this.setState({showModal:false});
+    handleSaveModalHide = () => {
+        this.setState({showSaveModal:false});
     };
+
+    handleGeneratingModalShow = () => {
+        this.setState({showGeneratingModal:true});
+    };
+
+    handleGeneratingModalHide = () => {
+        this.setState({showGeneratingModal:false});
+    };
+
+    handleAIDrumGeneration = async (e, formData) => {
+        e.preventDefault();
+        Tone.Transport.stop()
+        Tone.Transport.clear()
+        this.setState({isGenerating:true});
+        const primer_sequence_str = convertPatternToPrimerSequence(this.state.pattern);
+        const request_body = {
+            "userId": this.props.userId,
+            "primer_drums": primer_sequence_str,
+            "length": formData.generatedSteps,
+            "tempo": this.state.bpm,
+            "genre": formData.genre,
+            "rating": 5,
+            "name": formData.name
+        }
+        console.log(request_body)
+        const data = await generateDrumRNN(request_body);
+        console.log(data)
+        this.handleGeneratingModalHide();
+        this.setState({isGenerating:false});
+    }
 
     render() {
         return (
@@ -222,7 +263,11 @@ class DrumSequencer extends Component {
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
-                        <button type="button" onClick={this.handleModalShow}>Save</button>
+                        <button type="button" onClick={this.handleSaveModalShow}>Save</button>
+                    </div>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <button type="button" onClick={this.handleGeneratingModalShow} disabled={this.state.generateDisabled}>Generate AI Drums</button>
                     </div>
                 </div>
                 <Grid
@@ -234,13 +279,31 @@ class DrumSequencer extends Component {
                     totalSteps={this.state.totalSteps}
                 />
                 <Modal
-                    show={this.state.showModal}
-                    onHide={this.handleModalHide}
+                    show={this.state.showSaveModal}
+                    onHide={this.handleSaveModalHide}
                     title="Pattern Information" {...this.props}>
                     {!this.state.isSaving ?
-                    <SaveForm onSavePattern={this.handleSavePattern}/>
+                    <SaveForm
+                        onSavePattern={this.handleSavePattern}
+                        button_text={"Save Pattern"}/>
                     :
                     <Spinner text={"Saving..."}/>
+                    }
+                </Modal>
+                <Modal
+                    show={this.state.showGeneratingModal}
+                    onHide={this.handleGeneratingModalHide}
+                    title="Pattern Information" {...this.props}>
+                    {!this.state.isGenerating ?
+                        <SaveForm
+                            onSavePattern={this.handleAIDrumGeneration}
+                            button_text={"Generate AI Beat"}
+                            totalsteps={true}
+                            min={this.state.totalSteps + 3}
+                            max={this.state.maxSteps}
+                        />
+                        :
+                        <Spinner text={"Generating AI Beat..."} />
                     }
                 </Modal>
             </div>

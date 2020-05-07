@@ -32,3 +32,15 @@ export const deleteMidiFile = async (id, userId) => {
     )
 };
 
+
+export const generateDrumRNN = async (mididata) => {
+    return (
+        axios.post('/api/v1/midi/generate_drum_rnn', mididata)
+            .then(res => {
+                return res.data.data;
+            })
+            .catch(err => console.log(err))
+    )
+};
+
+

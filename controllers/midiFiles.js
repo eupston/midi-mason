@@ -10,11 +10,11 @@ const fs = require('fs');
 
 
 
+
 // @desc    Generates Midi drums
 // @route   POST /api/v1/midi/generate_drum_rnn
 // @access  PUBLIC
 exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
-
     const user = await User.findById(req.body.userId);
     if(!user){
         return next(new ErrorResponse("Could not Find User Id: " + req.body.userId, 404));
@@ -42,18 +42,21 @@ exports.generateDrumRNN = asyncHandler(async (req, res, next) => {
             midi_sequence: midi_sequence,
             comments: req.body.comments
         }
-        MidiFile.create(midiinfo)
-            .then(midifile => {
-                res.status(201)
-                    .json({
-                        success: true,
-                        data: midifile
-                    });
-            })
-            .catch(err => {
-                console.log(err)
-                return next(new ErrorResponse(err, 500));
-            });
+        try {
+            let midifile = await MidiFile.create(midiinfo);
+            midifile = JSON.parse(JSON.stringify(midifile));
+            user.midifiles.push(midifile);
+            await user.save();
+            res.status(201)
+                .json({
+                    success: true,
+                    data: midifile
+                });
+        }
+        catch (err){
+            console.log(err)
+            return next(new ErrorResponse(err, 500));
+        }
     });
 });
 
@@ -99,7 +102,8 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
         }
 
         try {
-            const midifile = await MidiFile.create(midiinfo)
+            let midifile = await MidiFile.create(midiinfo)
+            midifile = JSON.parse(JSON.stringify(midifile));
             user.midifiles.push(midifile);
             await user.save();
             deleteFile(filepath);
@@ -159,7 +163,8 @@ exports.createMidiFile = asyncHandler(async (req, res, next) => {
             comments: req.body.comments
         }
         try {
-            const midifile = await MidiFile.create(midiinfo)
+            let midifile = await MidiFile.create(midiinfo);
+            midifile = JSON.parse(JSON.stringify(midifile));
             user.midifiles.push(midifile);
             await user.save();
             deleteFile(filepath);
@@ -290,7 +295,7 @@ exports.updateMidiFile = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/midi/:id
 // @access  PRIVATE
 exports.deleteMidiFile = asyncHandler(async (req, res, next) => {
-
+    //TODO DELETE midifile off S3
     const user = await User.findById(req.query.userId); // get from session
     if(!user){
         return next(new ErrorResponse("Could not Find User Id: " + req.query.userId, 404));
@@ -321,6 +326,4 @@ exports.deleteMidiFile = asyncHandler(async (req, res, next) => {
     else{
         return next(new ErrorResponse("Not Authorized to Delete this Midifile " + req.params.id, 403));
     }
-
-
 });
