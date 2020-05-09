@@ -1,0 +1,127 @@
+.MainBar {
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #36363c;
+    font-size: 14px;
+}
+.MainBarSticky {
+    position: sticky;
+}
+
+.MainBar hr{
+    color: #36454f;
+}
+
+.MainLogoImg {
+    margin-top: 20px;
+}
+
+.Navbar {
+    display: flex;
+    justify-content: center;
+}
+
+.Navbar img {
+    margin-left: 20px;
+}
+
+.Navbar nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: -5px;
+}
+
+.Navbar li {
+    list-style: none;
+}
+
+.Navbar span {
+    border-top: 1px solid transparent;
+    margin-top: 16px;
+}
+
+.Navbar a:hover,
+.Navbar a:active,
+.Navbar a:focus{
+    color: white;
+    background-color: transparent;
+}
+
+
+.NavbarLeft {
+    position: absolute;
+    left: 20px;
+    vertical-align: top;
+    display: inline-block;
+    margin-top: 10px;
+
+}
+
+.NavbarMiddle {
+    margin-top: 20px;
+
+}
+
+.NavbarMiddle a {
+    color: gray;
+    margin: 0px 20px 0px 20px;
+    width: 80%;
+    text-decoration: none;
+}
+
+.NavbarRight {
+    position: absolute;
+    right: 120px;
+    vertical-align: top;
+    display: inline-block;
+    margin-top: 20px;
+
+}
+
+.NavbarRight a {
+    color: gray;
+    margin: 0px 6px 0px 6px;
+    width: 80%;
+    text-decoration: none;
+    font-size: 8px;
+}
+.NavbarMobile {
+    position: sticky;
+    z-index: 1000;
+    top:0;
+    background-color: #36363c;
+
+}
+.NavbarMobileItems {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    z-index: 1000;
+    top:0px;
+    background-color: #36363c;
+
+}
+.NavbarMobileItems button {
+    background-color: transparent;
+    border: transparent;
+    color: gray;
+    position: absolute;
+    left: 15px;
+    top: 20px;
+    display: inline-block;
+}
+.NavbarMobileItems button:focus {
+    outline: none;
+}
+.NavbarMobileItems button:active,
+.NavbarMobileItems button:hover {
+    color: #36454f;
+}
+.NavbarMobileItems h4{
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+

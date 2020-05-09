@@ -1,0 +1,25 @@
+.Logo {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Logo h4{
+    font-family:'Verdana', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    color: #0087ff;
+    letter-spacing:0.2em;
+    display:inline;
+    font-size: 100%;
+
+}
+
+.Logo h6{
+    display:inline;
+    font-family:'Verdana', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    color: gray;
+    opacity: 0.8;
+    letter-spacing:0.2em;
+    margin-left: -10px;
+    font-size: 20%;
+}

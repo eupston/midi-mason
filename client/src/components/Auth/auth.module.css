@@ -1,0 +1,37 @@
+.Auth {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    color: gray;
+}
+.Auth form {
+    width: 60%;
+    min-width:400px;
+}
+.Auth a{
+    text-decoration: none;
+    color: #36454f;
+}
+.Auth button {
+    margin-top: 20px;
+    margin-left: 0px;
+    width: 40%;
+    height: 20%;
+    min-height: 40px;
+    margin-bottom: 20px;
+}
+
+
+.Auth label {
+    margin-top: 20px;
+}
+
+
+.Error {
+    color: red;
+}
+.Success {
+    color: green;
+}
+
