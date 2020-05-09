@@ -108,6 +108,17 @@ class DrumSequencer extends Component {
         this.setState({pattern: patternUpdated});
     }
 
+    clearSteps = () => {
+        const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
+        const patternUpdated = patternCopy.map(track => {
+            return track.map(step => {
+                const updatedStep = {triggered:false, activated: false}
+                return updatedStep
+            })
+        })
+        this.setState({pattern: patternUpdated});
+    }
+
     handleToggleStep = (line, step) => {
         const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
         const { triggered, activated } = patternCopy[line][step];
@@ -147,7 +158,6 @@ class DrumSequencer extends Component {
 
         const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
         const new_steps = parseInt(e.target.value);
-        console.log(new_steps)
         if(new_steps < 1 || new_steps > 64 ){
             return false
         }
@@ -202,7 +212,6 @@ class DrumSequencer extends Component {
             "name": formData.name
         }
         const data = await createMidiFile(request_body);
-        console.log(data)
         this.handleSaveModalHide();
         this.setState({isSaving:false});
     }
@@ -238,9 +247,7 @@ class DrumSequencer extends Component {
             "rating": 5,
             "name": formData.name
         }
-        console.log(request_body)
         const data = await generateDrumRNN(request_body);
-        console.log(data)
         this.handleGeneratingModalHide();
         this.setState({isGenerating:false});
     }
@@ -268,6 +275,10 @@ class DrumSequencer extends Component {
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
                         <button type="button" onClick={this.handleGeneratingModalShow} disabled={this.state.generateDisabled}>Generate AI Drums</button>
+                    </div>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <button type="button" onClick={this.clearSteps}>Clear</button>
                     </div>
                 </div>
                 <Grid

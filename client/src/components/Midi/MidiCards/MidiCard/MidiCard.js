@@ -1,6 +1,6 @@
 import classes from './midicard.module.css';
 import {convertMidiSequenceToPattern} from "../../../../utils/MidiUtils";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import * as midiActions from '../../../../store/actions';
 import React, {Component} from 'react';
 import {connect} from "react-redux";
@@ -13,7 +13,6 @@ class MidiCard extends Component {
         length: this.props.length,
         author: this.props.author,
         seq: this.props.sequence,
-        showSeq: false,
         pattern: [],
     }
 
@@ -25,7 +24,6 @@ class MidiCard extends Component {
             pattern: pattern
         }
         this.props.setMidiSequencerData(midiData);
-        this.setState({showSeq:true});
     }
 
 
@@ -35,9 +33,8 @@ class MidiCard extends Component {
                 <p>Name: {this.state.name}</p>
                 <p>Tempo: {this.state.tempo}</p>
                 <p>Length: {this.state.length}</p>
-                <button type="button" onClick={this.handlePlayDrumSequencer}>Play</button>
+                <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>
                 <button type="button" onClick={() => this.props.onDelete(this.state.id, this.props.userId)}>Delete</button>
-                {this.state.showSeq ? <Redirect to={'/sequencer'}/> : null}
             </div>
         );
     }

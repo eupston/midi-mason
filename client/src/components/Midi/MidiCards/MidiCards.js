@@ -20,12 +20,11 @@ class MidiCards extends Component {
     }
 
     handleDeletePattern = async (id, userId) => {
-        console.log(id)
         const response = await deleteMidiFile(id, userId);
         if(response){
             const midiFilesCopy = [...this.state.midiFiles];
             const midiFilesUpdated = midiFilesCopy.filter(midifile =>{
-                return midifile._id.toString() != id;
+                return midifile._id.toString() !== id;
             })
             this.setState({midiFiles:midiFilesUpdated})
         }
