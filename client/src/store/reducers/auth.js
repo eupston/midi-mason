@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/actionTypes'
 
 const initialState = {
-        userId: "5e9278c1955b9a5acfd48593",
+        userId: "5e93b2904f3fdc17843e14b2",
         userAccessToken: "",
         isLoggedIn: false
 };

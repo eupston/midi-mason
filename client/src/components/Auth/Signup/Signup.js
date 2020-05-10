@@ -3,14 +3,12 @@ import { Redirect } from "react-router-dom";
 import classes from '../auth.module.css';
 import PageHeader from "../../../UI/PageHeader/PageHeader";
 import Button from "../../../UI/Button/Button";
+import {signup} from "../../../utils/AuthQueries";
 
 class Signup extends Component {
     state = {
         signupForm: {
-            firstName: {
-                value: '',
-            },
-            lastName: {
+            userName: {
                 value: '',
             },
             email: {
@@ -45,6 +43,20 @@ class Signup extends Component {
 
     signupHandler = async (event, data) => {
         event.preventDefault();
+        const request_body = {
+            name: data.userName,
+            email: data.email,
+            password: data.password,
+            confirmPassword: data.confirmedPassword,
+        }
+        const response = await signup(request_body);
+        if(response){
+            this.setState({success: "Successfully Signed up!"});
+        }
+        else{
+            this.setState({errors: "Something went wrong during signup."});
+            return null;
+        }
     };
 
     render() {
@@ -59,30 +71,19 @@ class Signup extends Component {
                 </div>
                 <div className={classes.Auth}>
                     <form onSubmit={e => this.signupHandler(e, {
-                        firstName: this.state.signupForm.firstName.value,
-                        lastName: this.state.signupForm.lastName.value,
+                        userName: this.state.signupForm.userName.value,
                         email: this.state.signupForm.email.value,
                         password: this.state.signupForm.password.value,
                         confirmedPassword: this.state.signupForm.confirmedPassword.value,
                     })}>
-                        <label>First Name</label>
+                        <label>User Name</label>
                         <input
-                            id="firstName"
+                            id="userName"
                             type="name"
                             control="input"
                             className="form-control"
-                            placeholder="Enter First Name"
-                            value={this.state.signupForm['firstName'].value}
-                            onChange={this.inputChangeHandler}
-                        />
-                        <label>Last Name</label>
-                        <input
-                            id="lastName"
-                            type="name"
-                            control="input"
-                            className="form-control"
-                            placeholder="Enter Last Name"
-                            value={this.state.signupForm['lastName'].value}
+                            placeholder="Enter User Name"
+                            value={this.state.signupForm['userName'].value}
                             onChange={this.inputChangeHandler}
                         />
                         <label>Email address</label>

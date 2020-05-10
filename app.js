@@ -60,6 +60,7 @@ app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/midi', midiRouter);
 
+//TODO look into returning error response
 app.use(errorHandler);
 
 app.use((req, res, next) => {

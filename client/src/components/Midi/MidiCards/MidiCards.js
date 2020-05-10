@@ -9,11 +9,7 @@ class MidiCards extends Component {
     }
 
     async componentDidMount() {
-        const params = {
-            limit: 50
-        };
-
-        const data = await getMidiFiles(params);
+        const data = await getMidiFiles(this.props.filterParams);
         if(data){
             this.setState({midiFiles:data})
         }

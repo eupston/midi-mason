@@ -79,6 +79,7 @@ class StickyNavbar extends Component {
                              <div className={classes.NavbarMiddle}>
                                  <Link onMouseOver={this.handleOffHover}  to="/">Home</Link>
                                  <Link onMouseOver={this.handleOffHover}  to="/sequencer">Sequencer</Link>
+                                 <Link onMouseOver={this.handleOffHover}  to="/mybeats">My Beats</Link>
                             </div>
                             <div className={classes.NavbarRight}>
                                 <Link to="/"><i className="fa fa-home fa-2x"></i></Link>
@@ -118,10 +119,8 @@ class StickyNavbar extends Component {
                     <a href="javascript:void(0)" className="closebtn" onClick={this.closeNav}>&times;</a>
                     <Link onClick={this.closeNav} to="/">Home</Link>
                     <Link onClick={this.closeNav} to="/sequencer">Sequencer</Link>
-                    <div id="jewelerycollapse" className="panel-collapse collapse">
-                        <ul className="list-group sidenavDropDown">
-                        </ul>
-                    </div>
+                    <Link onClick={this.closeNav}  to="/mybeats">My Beats</Link>
+
                     {!this.props.isLoggedIn ?
                         <React.Fragment>
                             <Link onClick={this.closeNav} to="/login">Login</Link>

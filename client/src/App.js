@@ -9,11 +9,12 @@ import ResetPassword from "./components/Auth/ResetPassword/ResetPassword";
 import Logout from "./components/Auth/Logout/Logout";
 import Signup from "./components/Auth/Signup/Signup";
 import Account from "./components/Auth/Account/Account";
+import MyBeats from "./containers/MyBeats/MyBeats";
 
 class App extends Component {
   render() {
     return (
-        <React.Fragment>
+        <div className='App' >
             <Navbar/>
             <Switch>
                 <Route path='/login' render={() => <Login redirect={true} />} />
@@ -22,9 +23,10 @@ class App extends Component {
                 <Route path='/signup' render={() => <Signup redirect={true} />} />
                 <Route path='/account' render={() => <Account/>}/>
                 <Route path={"/sequencer"} render={() => <DrumSequencer pattern={[]} totalSteps={8}/>}/>
-                <Route path='/' exact render={() =><MidiCards/>}/>
+                <Route path={"/mybeats"} render={() => <MyBeats/>}/>
+                <Route path='/' exact render={() =><MidiCards filterParams={{limit: 50}}/>}/>
             </Switch>
-        </React.Fragment>
+        </div>
     );
   }
 }

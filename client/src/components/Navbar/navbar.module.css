@@ -52,10 +52,10 @@
 
 .NavbarLeft {
     position: absolute;
-    left: 20px;
+    left: 0px;
     vertical-align: top;
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 5px;
 
 }
 

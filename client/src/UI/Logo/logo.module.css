@@ -1,13 +1,13 @@
 .Logo {
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
 }
 
 .Logo h4{
     font-family:'Verdana', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    color: #0087ff;
+    color: white;
     letter-spacing:0.2em;
     display:inline;
     font-size: 100%;
