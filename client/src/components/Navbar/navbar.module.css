@@ -20,6 +20,8 @@
 .Navbar {
     display: flex;
     justify-content: center;
+    align-items: center;
+    height:75px;
 }
 
 .Navbar img {
@@ -69,6 +71,8 @@
     margin: 0px 20px 0px 20px;
     width: 80%;
     text-decoration: none;
+    font-size:18px;
+
 }
 
 .NavbarRight {
