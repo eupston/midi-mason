@@ -91,7 +91,6 @@ class StickyNavbar extends Component {
                                 }
                             </div>
                         </nav>
-                     {!this.state.isScrolling ? <hr style={{width:"100%"}}></hr> :  <hr style={{width:"100%"}}></hr>}
                  </div>
                     :
             <div className={classes.NavbarMobile}>
@@ -133,7 +132,6 @@ class StickyNavbar extends Component {
                         </React.Fragment>
                     }
                 </div>
-                <hr style={{width:"100%"}}/>
             </div>}
         </React.Fragment>
         );
@@ -142,7 +140,7 @@ class StickyNavbar extends Component {
 
 const mapStateToProps = state => {
     return {
+        isLoggedIn: state.auth.isLoggedIn
     }
 };
-
 export default connect(mapStateToProps)(StickyNavbar);

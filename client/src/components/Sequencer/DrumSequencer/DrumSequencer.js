@@ -293,19 +293,23 @@ class DrumSequencer extends Component {
                     show={this.state.showSaveModal}
                     onHide={this.handleSaveModalHide}
                     title="Pattern Information" {...this.props}>
-                    {!this.state.isSaving ?
-                    <SaveForm
-                        onSavePattern={this.handleSavePattern}
-                        button_text={"Save Pattern"}/>
+                    {this.props.isLoggedIn ?
+                        !this.state.isSaving ?
+                        <SaveForm
+                            onSavePattern={this.handleSavePattern}
+                            button_text={"Save Pattern"}/>
+                        :
+                        <Spinner text={"Saving..."}/>
                     :
-                    <Spinner text={"Saving..."}/>
+                    <h1 style={{color:"white"}}>Please Login to Save a Beat.</h1>
                     }
                 </Modal>
                 <Modal
                     show={this.state.showGeneratingModal}
                     onHide={this.handleGeneratingModalHide}
                     title="Pattern Information" {...this.props}>
-                    {!this.state.isGenerating ?
+                    {this.props.isLoggedIn ?
+                        !this.state.isGenerating ?
                         <SaveForm
                             onSavePattern={this.handleAIDrumGeneration}
                             button_text={"Generate AI Beat"}
@@ -315,6 +319,8 @@ class DrumSequencer extends Component {
                         />
                         :
                         <Spinner text={"Generating AI Beat..."} />
+                    :
+                        <h1 style={{color:"white"}}>Please Login to Generate AI Midi Drums.</h1>
                     }
                 </Modal>
             </div>
@@ -327,7 +333,8 @@ const mapStateToProps = state => {
         bpm: state.midi.bpm,
         totalSteps: state.midi.totalSteps,
         pattern: state.midi.pattern,
-        userId: state.auth.userId
+        userId: state.auth.userId,
+        isLoggedIn: state.auth.isLoggedIn
     }
 };
 

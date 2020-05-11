@@ -90,7 +90,7 @@ class Login extends Component {
                         <Link to={'/reset-password'}>Forgot Password?</Link>
                         {this.props.redirect ?  <p>New User? <Link to={'/signup'}>Signup</Link></p> : null}
                     </form>
-                    {this.props.redirect ? this.props.isLoggedIn ? <Redirect to="/account"/> : null : null}
+                    {this.props.redirect ? this.props.isLoggedIn ? <Redirect to="/mybeats"/> : null : null}
                 </div>
             </React.Fragment>
         );

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import MidiCard from "./MidiCard/MidiCard";
 import {deleteMidiFile, getMidiFiles} from "../../../utils/MidiQueries";
 import classes from './midicards.module.css';
+import Spinner from "../../../UI/Spinner/Spinner";
 
 class MidiCards extends Component {
     state = {
@@ -38,13 +39,14 @@ class MidiCards extends Component {
                     name={midifile.name}
                     tempo={midifile.tempo}
                     length={midifile.length}
+                    authorId = {midifile.author}
                     sequence={midifile.midi_sequence}
                     onDelete={this.handleDeletePattern}
                 />
         })
         return (
             <div className={classes.MidiCards}>
-                {midiFileElements}
+                {!midiFileElements.length < 1 ? midiFileElements : <Spinner/>}
             </div>
         );
     }
