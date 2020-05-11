@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import MidiCard from "./MidiCard/MidiCard";
 import {deleteMidiFile, getMidiFiles} from "../../../utils/MidiQueries";
 import classes from './midicards.module.css';
+import Spinner from "../../../UI/Spinner/Spinner";
 
 class MidiCards extends Component {
     state = {
@@ -9,23 +10,18 @@ class MidiCards extends Component {
     }
 
     async componentDidMount() {
-        const params = {
-            limit: 50
-        };
-
-        const data = await getMidiFiles(params);
+        const data = await getMidiFiles(this.props.filterParams);
         if(data){
             this.setState({midiFiles:data})
         }
     }
 
     handleDeletePattern = async (id, userId) => {
-        console.log(id)
         const response = await deleteMidiFile(id, userId);
         if(response){
             const midiFilesCopy = [...this.state.midiFiles];
             const midiFilesUpdated = midiFilesCopy.filter(midifile =>{
-                return midifile._id.toString() != id;
+                return midifile._id.toString() !== id;
             })
             this.setState({midiFiles:midiFilesUpdated})
         }
@@ -43,13 +39,14 @@ class MidiCards extends Component {
                     name={midifile.name}
                     tempo={midifile.tempo}
                     length={midifile.length}
+                    authorId = {midifile.author}
                     sequence={midifile.midi_sequence}
                     onDelete={this.handleDeletePattern}
                 />
         })
         return (
             <div className={classes.MidiCards}>
-                {midiFileElements}
+                {!midiFileElements.length < 1 ? midiFileElements : <Spinner/>}
             </div>
         );
     }

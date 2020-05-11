@@ -1,14 +1,21 @@
 import * as actionTypes from '../actions/actionTypes';
 
-export const setCustomerAccessToken = (accessToken) => {
+export const setUserAccessToken = (accessToken) => {
     return {
-        type:actionTypes.SET_CUSTOMER_ACCESS_TOKEN,
-        customerAccessToken: accessToken
+        type:actionTypes.SET_USER_ACCESS_TOKEN,
+        userAccessToken: accessToken
     };
 };
 
-export const customerLogout = () => {
+export const setUserId = (userId) => {
     return {
-        type:actionTypes.CUSTOMER_LOGOUT,
+        type:actionTypes.SET_USER_ID,
+        userId: userId
+    };
+};
+
+export const userLogout = () => {
+    return {
+        type:actionTypes.USER_LOGOUT,
     };
 };

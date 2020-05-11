@@ -1,9 +1,19 @@
 import classes from './midicard.module.css';
 import {convertMidiSequenceToPattern} from "../../../../utils/MidiUtils";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import * as midiActions from '../../../../store/actions';
 import React, {Component} from 'react';
 import {connect} from "react-redux";
+import Radium, {StyleRoot} from 'radium';
+import { fadeIn } from 'react-animations';
+
+const styles = {
+    fadeIn: {
+        animation: 'x 1s',
+        animationName: Radium.keyframes(fadeIn, 'fadeIn')
+    }
+
+}
 
 class MidiCard extends Component {
     state = {
@@ -11,9 +21,8 @@ class MidiCard extends Component {
         name: this.props.name,
         tempo: this.props.tempo,
         length: this.props.length,
-        author: this.props.author,
+        authorId: this.props.authorId,
         seq: this.props.sequence,
-        showSeq: false,
         pattern: [],
     }
 
@@ -25,20 +34,26 @@ class MidiCard extends Component {
             pattern: pattern
         }
         this.props.setMidiSequencerData(midiData);
-        this.setState({showSeq:true});
     }
 
 
     render() {
         return (
-            <div className={classes.MidiCard} >
+            <StyleRoot>
+
+            <div className={classes.MidiCard}  style={styles.fadeIn}>
+                {console.log(this.state.authorId)}
                 <p>Name: {this.state.name}</p>
                 <p>Tempo: {this.state.tempo}</p>
                 <p>Length: {this.state.length}</p>
-                <button type="button" onClick={this.handlePlayDrumSequencer}>Play</button>
-                <button type="button" onClick={() => this.props.onDelete(this.state.id, this.props.userId)}>Delete</button>
-                {this.state.showSeq ? <Redirect to={'/sequencer'}/> : null}
+                <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>
+                {this.props.userId === this.state.authorId ?
+                    <button type="button" onClick={() => this.props.onDelete(this.state.id, this.props.userId)}>Delete</button>
+                    :
+                    null
+                }
             </div>
+            </StyleRoot>
         );
     }
 }

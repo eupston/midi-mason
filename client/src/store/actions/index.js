@@ -1,2 +1,2 @@
 export{ setMidiSequencerData } from './midi';
-export{ setCustomerAccessToken, customerLogout } from './auth';
+export{ setUserAccessToken, userLogout, setUserId } from './auth';
