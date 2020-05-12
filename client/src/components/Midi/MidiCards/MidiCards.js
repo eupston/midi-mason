@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import MidiCard from "./MidiCard/MidiCard";
-import {deleteMidiFile, getMidiFiles} from "../../../utils/MidiQueries";
+import {getMidiFiles} from "../../../utils/MidiQueries";
 import classes from './midicards.module.css';
 import Spinner from "../../../UI/Spinner/Spinner";
 
@@ -16,21 +16,6 @@ class MidiCards extends Component {
         }
     }
 
-    handleDeletePattern = async (id, userId) => {
-        const response = await deleteMidiFile(id, userId);
-        if(response){
-            const midiFilesCopy = [...this.state.midiFiles];
-            const midiFilesUpdated = midiFilesCopy.filter(midifile =>{
-                return midifile._id.toString() !== id;
-            })
-            this.setState({midiFiles:midiFilesUpdated})
-        }
-        else{
-            alert("Could Not Delete Midi File. Please Try Again.")
-        }
-    }
-
-
     render() {
         const midiFileElements = this.state.midiFiles.map(midifile => {
             return <MidiCard
@@ -41,7 +26,6 @@ class MidiCards extends Component {
                     length={midifile.length}
                     authorId = {midifile.author}
                     sequence={midifile.midi_sequence}
-                    onDelete={this.handleDeletePattern}
                 />
         })
         return (
