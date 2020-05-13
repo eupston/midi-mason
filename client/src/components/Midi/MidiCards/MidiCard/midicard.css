@@ -3,12 +3,22 @@
     width:300px;
     height:300px;
     border-radius: 10px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);
+    box-shadow: -10px 4px 35px 15px rgba(0, 0, 0, .5);
     color: #fff;
     font-size: 18px;
-    margin: 5px 5px 5px 5px;
     border: 2px solid transparent;
     background: #36363c;
+    overflow: hidden;
+    transition: 0.5s;
+}
+
+
+.MidiCard:hover{
+    transform: translateX(-2.5rem);
+}
+
+.MidiCard:not(:first-child){
+    margin-left: -1.5rem;
 }
 
 .MidiCard button {
@@ -20,7 +30,9 @@
     font-size: 12px;
     letter-spacing: 1px;
     border-radius: 4px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);
+    /*box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);*/
+    box-shadow: -5px 2px 5px 0px rgba(0, 0, 0, .3);
+
     cursor: pointer;
     border: 2px solid transparent;
     width: 80%;

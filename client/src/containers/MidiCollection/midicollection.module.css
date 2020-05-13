@@ -1,0 +1,15 @@
+.MidiCollection {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.MidiCollection h3{
+    padding: 5px;
+    letter-spacing: 0.5em;
+}
+
+.Title{
+    background-image: linear-gradient(90deg,#0087ff, #00B7FF);
+    border-radius: 10px;
+}

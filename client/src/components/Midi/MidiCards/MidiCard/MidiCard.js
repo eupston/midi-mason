@@ -1,4 +1,4 @@
-import classes from './midicard.module.css';
+import './midicard.css';
 import {convertMidiSequenceToPattern} from "../../../../utils/MidiUtils";
 import {Link} from "react-router-dom";
 import * as midiActions from '../../../../store/actions';
@@ -55,7 +55,7 @@ class MidiCard extends Component {
         return (
             <StyleRoot>
 
-            <div className={classes.MidiCard}  style={styles.fadeIn}>
+            <div className="MidiCard"  style={styles.fadeIn}>
                 {console.log(this.state.authorId)}
                 <p>Name: {this.state.name}</p>
                 <p>Tempo: {this.state.tempo}</p>

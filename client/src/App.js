@@ -25,7 +25,7 @@ class App extends Component {
                 <Route path='/account' render={() => <Account/>}/>
                 <Route path={"/sequencer"} render={() => <DrumSequencer pattern={[]} totalSteps={8}/>}/>
                 <Route path={"/mybeats"} render={() => <MyBeats/>}/>
-                <Route path='/' exact render={() =><MidiCollection filterParams={{limit: 50}}/>}/>
+                <Route path='/' exact render={() =><MidiCollection title={"All Beats"} filterParams={{limit: 50}}/>}/>
             </Switch>
         </div>
     );
