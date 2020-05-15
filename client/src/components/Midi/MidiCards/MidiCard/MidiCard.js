@@ -13,7 +13,6 @@ const styles = {
         animation: 'x 1s',
         animationName: Radium.keyframes(fadeIn, 'fadeIn')
     }
-
 }
 
 class MidiCard extends Component {
@@ -53,21 +52,29 @@ class MidiCard extends Component {
 
     render() {
         return (
-            <StyleRoot>
-
-            <div className="MidiCard"  style={styles.fadeIn}>
-                {console.log(this.state.authorId)}
-                <p>Name: {this.state.name}</p>
-                <p>Tempo: {this.state.tempo}</p>
-                <p>Length: {this.state.length}</p>
-                <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>
-                {this.props.userId === this.state.authorId ?
-                    <button type="button" onClick={() => this.handleDeletePattern(this.state.id, this.props.userId)}>Delete</button>
-                    :
-                    null
-                }
-            </div>
-            </StyleRoot>
+            // <StyleRoot>
+                <div className="MidiCard"  style={styles.fadeIn}>
+                    <h4>{this.state.name}</h4>
+                    <div className="DescriptionItem">
+                        <h5>Tempo: </h5>
+                        <p> {this.state.tempo}</p>
+                    </div>
+                    <div className="DescriptionItem">
+                        <h5>Length: </h5>
+                        <p> {this.state.length}</p>
+                    </div>
+                    <div className="DescriptionItem">
+                        <h5>Author: </h5>
+                        <p> Steve</p>
+                    </div>
+                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>
+                    {this.props.userId === this.state.authorId ?
+                        <button type="button" onClick={() => this.handleDeletePattern(this.state.id, this.props.userId)}>Delete</button>
+                        :
+                        null
+                    }
+                </div>
+            // </StyleRoot>
         );
     }
 }

@@ -39,7 +39,7 @@ class MidiCollection extends Component {
     render() {
         const midiFileElements = this.state.midiFiles.map((midifile,index) => {
             return(
-                <MidiCard
+            <MidiCard
                     key={midifile._id}
                     id={midifile._id}
                     name={midifile.name}
