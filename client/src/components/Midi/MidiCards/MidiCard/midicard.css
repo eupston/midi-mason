@@ -1,12 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Pirata+One|Rubik:900');
+
 .MidiCard{
     text-align: center;
     width:300px;
     height:300px;
     border-radius: 10px;
-    box-shadow: -10px 4px 35px 15px rgba(0, 0, 0, .5);
+    /*box-shadow: 5px 5px 15px 15px rgba(0, 0, 0, .2);*/
     color: #fff;
     font-size: 18px;
-    border: 2px solid transparent;
+    border: 2px solid #00B7FF;
     background: #36363c;
     overflow: hidden;
     transition: 0.5s;
@@ -22,6 +24,7 @@
 }
 
 .MidiCard h4{
+    text-transform: uppercase;
     margin: 20px;
     font-weight: bold;
     letter-spacing: 5px;
@@ -45,11 +48,11 @@
     letter-spacing: 1px;
     border-radius: 4px;
     /*box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);*/
-    box-shadow: -5px 2px 5px 0px rgba(0, 0, 0, .3);
+    /*box-shadow: 5px 2px 5px 0px rgba(0, 0, 0, .3);*/
     cursor: pointer;
     border: 2px solid transparent;
     width: 80%;
-    height: 20%;
+    height: 15%;
 }
 .MidiCard button:hover,
 .MidiCard button:active{

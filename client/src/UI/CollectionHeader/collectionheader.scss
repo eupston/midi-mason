@@ -1,0 +1,58 @@
+$face: #0087ff;
+$flourish: #8a4393;
+$shadowdots: #631090;
+$shadow: #0087ff;
+
+
+
+.CollectionHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 100px;
+  //position: relative;
+}
+
+.CollectionHeader h1 {
+  font-family: 'Rig Shaded Bold Face', sans-serif;
+  text-transform: uppercase;
+  font-size: 10vw;
+  text-align: center;
+  font-weight: normal;
+  margin: 0;
+  //top: 50%;
+  //left: 50%;
+  //transform: translate(-50%, -90%);
+  //position: absolute;
+  color: $face;
+  letter-spacing: .6rem;
+  width: 100%;
+
+  &:before,
+  &:after,
+  span:before,
+  span:after {
+    content: attr(data-heading);
+    position: absolute;
+    overflow: hidden;
+    left: 0;
+    top: 0;
+    width: 100%;
+    font-weight: normal;
+    text-shadow: none;
+  }
+
+  &::before {
+    font-family: 'Rig Shaded Bold Shading Fine', sans-serif;
+    color: $shadowdots;
+    transform: translate(0, 40%);
+  }
+
+  &::after {
+    font-family: 'Rig Shaded Bold Extrude', sans-serif;
+    color: $shadow;
+    transform: translate(0, 40%);
+    z-index: -1;
+  }
+}
+
