@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Pirata+One|Rubik:900');
-
 .MidiCard{
     text-align: center;
     width:300px;
@@ -24,21 +22,29 @@
 }
 
 .MidiCard h4{
+    font-family: 'Rig Bold Face', sans-serif;
     text-transform: uppercase;
     margin: 20px;
     font-weight: bold;
     letter-spacing: 5px;
-
+    color: white;
 }
+
+
 .MidiCard h5 {
     color: #818181;
     margin-right: 10px;
+    font-family: 'Rig Bold Face', sans-serif;
+
 }
 .MidiCard p {
+    font-family: 'Rig Bold Face', sans-serif;
 
 }
 
+
 .MidiCard button {
+    font-family: 'Rig Bold Face', sans-serif;
     margin: 5px 5px 5px 8px;
     outline: none;
     background: #42424a;
@@ -46,18 +52,14 @@
     padding: 1em;
     font-size: 12px;
     letter-spacing: 1px;
-    border-radius: 4px;
-    /*box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);*/
-    /*box-shadow: 5px 2px 5px 0px rgba(0, 0, 0, .3);*/
     cursor: pointer;
-    border: 2px solid transparent;
-    width: 80%;
-    height: 15%;
+    width: 60%;
+
 }
 .MidiCard button:hover,
 .MidiCard button:active{
-    color: #0087ff;
-    border: 2px solid #0087ff;
+    color: #00B7FF;
+    /*border: 2px solid #0087ff;*/
 }
 
 .DescriptionItem {

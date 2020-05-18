@@ -7,6 +7,7 @@ import {connect} from "react-redux";
 import Radium, {StyleRoot} from 'radium';
 import { fadeIn } from 'react-animations';
 import {deleteMidiFile} from "../../../../utils/MidiQueries";
+import PushButton from "../../../../UI/PushButton/PushButton";
 
 const styles = {
     fadeIn: {
@@ -67,7 +68,9 @@ class MidiCard extends Component {
                         <h5>Author: </h5>
                         <p> Steve</p>
                     </div>
-                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>
+                    {/*<Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>*/}
+                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><PushButton/></Link>
+                    {/*<PushButton/>*/}
                     {this.props.userId === this.state.authorId ?
                         <button type="button" onClick={() => this.handleDeletePattern(this.state.id, this.props.userId)}>Delete</button>
                         :

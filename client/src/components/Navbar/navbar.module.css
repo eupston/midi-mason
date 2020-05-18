@@ -2,11 +2,13 @@
     top: 0;
     width: 100%;
     z-index: 1000;
-    background-color: #36363c;
+    background-color: rgba(40,40,44, .5);
     font-size: 14px;
-    border-bottom: 2px white solid;
+    border-bottom: 1px white solid;
     height:90px;
     margin-bottom: 20px;
+    font-family: 'Rig Bold Inline';
+
 }
 .MainBarSticky {
     position: sticky;

@@ -1,0 +1,62 @@
+@import 'https://fonts.googleapis.com/css?family=Rubik+One';
+
+
+
+%pushbutton {
+  position: absolute;
+  content: '';
+  transition: all .5s;
+}
+
+.button {
+  display: inline-block;
+  padding: 20px 40px;
+  color: white;
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  vertical-align: middle;
+  text-decoration: none;
+  font-size: 80%;
+  transition: all .5s;
+  height: 16%;
+  border: 1px solid transparent;
+
+  &::before {
+    @extend %pushbutton;
+    bottom: -10px;
+    height: 10px;
+    width: 100%;
+    left: 4px;
+    transform: skewX(45deg);
+    background-color: lighten(#00B7FF, 10%);
+  }
+
+  &::after {
+    @extend %pushbutton;
+    right: -10px;
+    height: 100%;
+    width: 10px;
+    bottom: -5px;
+    transform: skewY(45deg);
+    background-color: #0087ff;
+  }
+
+
+  &:active {
+    margin-left: 10px;
+    margin-top: 10px;
+    &::before {
+      bottom: -2px;
+      height: 2px;
+      left: 0px;
+    }
+
+    &::after {
+      right: -2px;
+      width: 2px;
+      bottom: 0px;
+    }
+  }
+}
