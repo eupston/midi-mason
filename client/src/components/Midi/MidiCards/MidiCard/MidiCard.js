@@ -1,18 +1,19 @@
-import classes from './midicard.module.css';
+import './midicard.css';
 import {convertMidiSequenceToPattern} from "../../../../utils/MidiUtils";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import * as midiActions from '../../../../store/actions';
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import Radium, {StyleRoot} from 'radium';
 import { fadeIn } from 'react-animations';
+import {deleteMidiFile} from "../../../../utils/MidiQueries";
+import PushButton from "../../../../UI/PushButton/PushButton";
 
 const styles = {
     fadeIn: {
         animation: 'x 1s',
         animationName: Radium.keyframes(fadeIn, 'fadeIn')
     }
-
 }
 
 class MidiCard extends Component {
@@ -36,24 +37,47 @@ class MidiCard extends Component {
         this.props.setMidiSequencerData(midiData);
     }
 
+    handleDeletePattern = async (id, userId) => {
+        const response = await deleteMidiFile(id, userId);
+        if(response){
+            const midiFilesCopy = [...this.state.midiFiles];
+            const midiFilesUpdated = midiFilesCopy.filter(midifile =>{
+                return midifile._id.toString() !== id;
+            })
+            this.setState({midiFiles:midiFilesUpdated})
+        }
+        else{
+            alert("Could Not Delete Midi File. Please Try Again.")
+        }
+    }
 
     render() {
         return (
-            <StyleRoot>
-
-            <div className={classes.MidiCard}  style={styles.fadeIn}>
-                {console.log(this.state.authorId)}
-                <p>Name: {this.state.name}</p>
-                <p>Tempo: {this.state.tempo}</p>
-                <p>Length: {this.state.length}</p>
-                <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>
-                {this.props.userId === this.state.authorId ?
-                    <button type="button" onClick={() => this.props.onDelete(this.state.id, this.props.userId)}>Delete</button>
-                    :
-                    null
-                }
-            </div>
-            </StyleRoot>
+            // <StyleRoot>
+                <div className="MidiCard"  style={styles.fadeIn}>
+                    <h4>{this.state.name}</h4>
+                    <div className="DescriptionItem">
+                        <h5>Tempo: </h5>
+                        <p> {this.state.tempo}</p>
+                    </div>
+                    <div className="DescriptionItem">
+                        <h5>Length: </h5>
+                        <p> {this.state.length}</p>
+                    </div>
+                    <div className="DescriptionItem">
+                        <h5>Author: </h5>
+                        <p> Steve</p>
+                    </div>
+                    {/*<Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>*/}
+                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><PushButton/></Link>
+                    {/*<PushButton/>*/}
+                    {this.props.userId === this.state.authorId ?
+                        <button type="button" onClick={() => this.handleDeletePattern(this.state.id, this.props.userId)}>Delete</button>
+                        :
+                        null
+                    }
+                </div>
+            // </StyleRoot>
         );
     }
 }

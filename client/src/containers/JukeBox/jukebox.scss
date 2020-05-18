@@ -1,0 +1,70 @@
+::-webkit-scrollbar {
+  width: 0px;  /* remove scrollbar space */
+  background: transparent;  /* optional: just make scrollbar invisible */
+}
+/* optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: transparent;
+
+}
+.Jukebox{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+
+}
+
+.gallery {
+  padding: 15vh 0;
+  width: 100%;
+  height: auto;
+  text-align: center;
+  white-space: nowrap;
+  overflow:hidden;
+  overflow-x: auto;
+  -webkit-overflow-scroll: touch;
+  &>div {
+    white-space: normal;
+    border-radius: 20px;
+    width: 20vw;
+    height: 25vw;
+    overflow: hidden;
+    -webkit-box-reflect: below 5px -webkit-gradient(linear, left top, left top, from(transparent), to(rgba(255, 255, 255, 0.16)));
+    display: inline-block;
+    margin-left: 3vw;
+    transform-origin: 60% 40%;
+    transform:
+            translate3d(0, 0, 0)
+            perspective( 30vw )
+            rotateY( -30deg );
+    position: relative;
+    opacity:1;
+    transition:
+            box-shadow 0.2s ease-out,
+            transform 0.2s ease-out;
+    &:hover, &:active {
+      transform:
+              translate3d(3vw, 0, 0)
+              perspective( 30vw )
+              scale(1.1)
+              rotateY( -15deg );
+      z-index: 99;
+      &:after {
+        opacity: 0.2;
+      }
+      span {
+        opacity: 0.9;
+        transform: translate(0);
+      }
+    }
+    $img-count: 1000;
+    @for $i from 1 through $img-count{
+      &:nth-child(#{ $img-count - $i}) {
+        z-index: $i
+      }
+    }
+  }
+
+}
