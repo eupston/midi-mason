@@ -53,7 +53,6 @@ class MidiCard extends Component {
 
     render() {
         return (
-            // <StyleRoot>
                 <div className="MidiCard"  style={styles.fadeIn}>
                     <h4>{this.state.name}</h4>
                     <div className="DescriptionItem">
@@ -68,16 +67,13 @@ class MidiCard extends Component {
                         <h5>Author: </h5>
                         <p> Steve</p>
                     </div>
-                    {/*<Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><button type="button" >Play</button></Link>*/}
-                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><PushButton/></Link>
-                    {/*<PushButton/>*/}
+                   <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><PushButton/></Link>
                     {this.props.userId === this.state.authorId ?
                         <button type="button" onClick={() => this.handleDeletePattern(this.state.id, this.props.userId)}>Delete</button>
                         :
                         null
                     }
                 </div>
-            // </StyleRoot>
         );
     }
 }
