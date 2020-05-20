@@ -8,6 +8,7 @@ import {convertPatternToMidiSequence, convertPatternToPrimerSequence} from "../.
 import Modal from "../../../UI/Modal/Modal";
 import SaveForm from "../../../UI/SaveForm/SaveForm";
 import Spinner from "../../../UI/Spinner/Spinner";
+import * as midiActions from "../../../store/actions";
 
 class DrumSequencer extends Component {
 
@@ -19,10 +20,10 @@ class DrumSequencer extends Component {
             volume: -6,
             totalSteps: props.totalSteps,
             totalTracks: 9,
-            start: false,
+            startSeq: false,
             pattern: props.pattern,
             drumOrder :['BD', 'S1', 'HC', 'OH', "TL", "TM", "TH", "S2", "RD"],
-            showSaveModal: false,
+            showSaveModal: props.startSeq,
             showGeneratingModal: false,
             isSaving: false,
             isGenerating: false,
@@ -47,7 +48,7 @@ class DrumSequencer extends Component {
             }).toMaster()
     }
 
-    componentDidMount(){
+    componentWillMount(){
         if(this.state.pattern.length < 1) {
             const pattern = Array(this.state.totalTracks)
                 .fill(new Array(this.state.totalSteps)
@@ -63,6 +64,13 @@ class DrumSequencer extends Component {
             this.startSequencer()
         }
     }
+
+    componentWillUnmount() {
+        if(this.state.startSeq){
+            this.handleStartStop();
+        }
+    }
+
 
     startSequencer = () => {
         const steps = new Array(this.state.totalSteps).fill(1).map((v, i) => {
@@ -141,8 +149,15 @@ class DrumSequencer extends Component {
     };
 
     handleStartStop = () => {
-        this.setState({start:!this.state.start})
-        if(!this.state.start) {
+        this.setState({startSeq:!this.state.startSeq})
+        // if(!this.state.startSeq){
+        //     this.props.startSequencer();
+        // }
+        // else{
+        //     this.props.stopSequencer();
+        // }
+
+        if(!this.state.startSeq) {
             this.startSequencer()
             Tone.Transport.start()
         }
@@ -258,7 +273,7 @@ class DrumSequencer extends Component {
                 <div className={classes.Transport}>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
-                        <button type="button" onClick={this.handleStartStop}>{!this.state.start ? "Play" : "Stop"}</button>
+                        <button type="button" onClick={this.handleStartStop}>{!this.state.startSeq ? "Play" : "Stop"}</button>
                     </div>
                     <div className={classes.TransportItem}>
                         <label>Total Steps</label>
@@ -333,9 +348,17 @@ const mapStateToProps = state => {
         bpm: state.midi.bpm,
         totalSteps: state.midi.totalSteps,
         pattern: state.midi.pattern,
+        startSeq: state.midi.startSeq,
         userId: state.auth.userId,
         isLoggedIn: state.auth.isLoggedIn
     }
 };
 
-export default connect(mapStateToProps)(DrumSequencer);
+const mapDispatchToProps = dispatch => {
+    return {
+        startSequencer: () => dispatch(midiActions.startSequencer()),
+        stopSequencer: () => dispatch(midiActions.stopSequencer()),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DrumSequencer);
