@@ -60,6 +60,7 @@ class Jukebox extends Component {
 
     render() {
         const midiFileElements = this.state.midiFiles.map((midifile,index) => {
+            console.log(midifile)
             return(
                 <MidiCard
                     key={midifile._id}
@@ -69,6 +70,7 @@ class Jukebox extends Component {
                     length={midifile.length}
                     authorId = {midifile.author}
                     sequence={midifile.midi_sequence}
+                    url={midifile.url}
                 />
             )
         })

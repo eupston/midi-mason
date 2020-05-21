@@ -4,6 +4,7 @@ const initialState = {
     bpm: 120,
     totalSteps: 8,
     pattern: [],
+    url: ""
 };
 
 const reducer = (state= initialState, action) => {
@@ -13,7 +14,8 @@ const reducer = (state= initialState, action) => {
                 ...state,
                 bpm: action.midiData.bpm,
                 totalSteps: action.midiData.totalSteps,
-                pattern: action.midiData.pattern
+                pattern: action.midiData.pattern,
+                url: action.midiData.url
             };
         default:
             return {...state};

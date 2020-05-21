@@ -25,10 +25,12 @@ class DrumSequencer extends Component {
             drumOrder :['BD', 'S1', 'HC', 'OH', "TL", "TM", "TH", "S2", "RD"],
             showSaveModal: props.startSeq,
             showGeneratingModal: false,
+            showDownloadModal: false,
             isSaving: false,
             isGenerating: false,
             maxSteps: 64,
-            generateDisabled:false
+            generateDisabled:false,
+            isDownloadable: true
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -69,6 +71,13 @@ class DrumSequencer extends Component {
         if(this.state.startSeq){
             this.handleStartStop();
         }
+        const midi_data = {
+            bpm: this.state.bpm,
+            totalSteps: this.state.totalSteps,
+            pattern: this.state.pattern,
+            url: this.props.url
+        }
+        this.props.setMidiSequencerData(midi_data);
     }
 
 
@@ -150,12 +159,6 @@ class DrumSequencer extends Component {
 
     handleStartStop = () => {
         this.setState({startSeq:!this.state.startSeq})
-        // if(!this.state.startSeq){
-        //     this.props.startSequencer();
-        // }
-        // else{
-        //     this.props.stopSequencer();
-        // }
 
         if(!this.state.startSeq) {
             this.startSequencer()
@@ -239,6 +242,17 @@ class DrumSequencer extends Component {
         this.setState({showSaveModal:false});
     };
 
+    handleDownloadModalShow = () => {
+        if(!this.state.isDownloadable){
+            this.setState({showDownloadModal:true});
+        }
+    };
+
+    handleDownloadModalHide = () => {
+        this.setState({showDownloadModal:false});
+    };
+
+
     handleGeneratingModalShow = () => {
         this.setState({showGeneratingModal:true});
     };
@@ -295,6 +309,12 @@ class DrumSequencer extends Component {
                         <span>dummy</span>
                         <button type="button" onClick={this.clearSteps}>Clear</button>
                     </div>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <a href={this.state.isDownloadable ? this.props.url : null} target="_blank" download>
+                            <button type="button" onClick={this.handleDownloadModalShow}>Download</button>
+                        </a>
+                    </div>
                 </div>
                 <Grid
                     sequence={this.state.pattern}
@@ -338,6 +358,12 @@ class DrumSequencer extends Component {
                         <h1 style={{color:"white"}}>Please Login to Generate AI Midi Drums.</h1>
                     }
                 </Modal>
+                <Modal
+                    show={this.state.showDownloadModal}
+                    onHide={this.handleDownloadModalHide}
+                    title="Download Beat" {...this.props}>
+                    <h1 style={{color:"white"}}>Beat has been Modified. Please Save the Beat to Download it.</h1>
+                </Modal>
             </div>
         );
     }
@@ -349,6 +375,7 @@ const mapStateToProps = state => {
         totalSteps: state.midi.totalSteps,
         pattern: state.midi.pattern,
         startSeq: state.midi.startSeq,
+        url: state.midi.url,
         userId: state.auth.userId,
         isLoggedIn: state.auth.isLoggedIn
     }
@@ -356,9 +383,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        startSequencer: () => dispatch(midiActions.startSequencer()),
-        stopSequencer: () => dispatch(midiActions.stopSequencer()),
+        setMidiSequencerData: (midiData) => dispatch(midiActions.setMidiSequencerData(midiData))
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DrumSequencer);
+export default connect(mapStateToProps,mapDispatchToProps)(DrumSequencer);

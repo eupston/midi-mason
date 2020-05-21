@@ -26,6 +26,7 @@ class MidiCards extends Component {
                     length={midifile.length}
                     authorId = {midifile.author}
                     sequence={midifile.midi_sequence}
+                    url={midifile.url}
                 />
         })
         return (

@@ -24,6 +24,7 @@ class MidiCard extends Component {
         length: this.props.length,
         authorId: this.props.authorId,
         seq: this.props.sequence,
+        url: this.props.url,
         pattern: [],
     }
 
@@ -32,11 +33,13 @@ class MidiCard extends Component {
         const midiData = {
             bpm : this.state.tempo,
             totalSteps: this.state.length,
-            pattern: pattern
+            pattern: pattern,
+            url: this.state.url
         }
         this.props.setMidiSequencerData(midiData);
     }
 
+    //TODO delete handler has bug
     handleDeletePattern = async (id, userId) => {
         const response = await deleteMidiFile(id, userId);
         if(response){
