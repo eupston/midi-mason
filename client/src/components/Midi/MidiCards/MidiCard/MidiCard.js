@@ -34,7 +34,8 @@ class MidiCard extends Component {
             bpm : this.state.tempo,
             totalSteps: this.state.length,
             pattern: pattern,
-            url: this.state.url
+            url: this.state.url,
+            isDownloadable: true
         }
         this.props.setMidiSequencerData(midiData);
     }

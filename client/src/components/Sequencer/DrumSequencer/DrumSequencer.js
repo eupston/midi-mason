@@ -30,7 +30,7 @@ class DrumSequencer extends Component {
             isGenerating: false,
             maxSteps: 64,
             generateDisabled:false,
-            isDownloadable: true
+            isDownloadable: props.isDownloadable
         };
 
         Tone.Transport.bpm.value = this.state.bpm;
@@ -133,14 +133,14 @@ class DrumSequencer extends Component {
                 return updatedStep
             })
         })
-        this.setState({pattern: patternUpdated});
+        this.setState({pattern: patternUpdated, isDownloadable:false});
     }
 
     handleToggleStep = (line, step) => {
         const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
         const { triggered, activated } = patternCopy[line][step];
         patternCopy[line][step] = { triggered, activated: !activated };
-        this.setState({pattern: patternCopy});
+        this.setState({pattern: patternCopy, isDownloadable:false});
     };
 
     handleHoverOnStep = (line, step) => {
@@ -173,7 +173,6 @@ class DrumSequencer extends Component {
     }
 
     handleStepCountChange = (e) => {
-
         const patternCopy = JSON.parse(JSON.stringify(this.state.pattern));
         const new_steps = parseInt(e.target.value);
         if(new_steps < 1 || new_steps > 64 ){
@@ -200,7 +199,12 @@ class DrumSequencer extends Component {
         if(this.state.totalSteps + 3 > this.state.maxSteps) {
             disableGenerateButton = true;
         }
-        this.setState({totalSteps: new_steps, pattern: patternUpdated, generateDisabled:disableGenerateButton});
+        this.setState({
+            totalSteps: new_steps,
+            pattern: patternUpdated,
+            generateDisabled:disableGenerateButton,
+            isDownloadable: false
+        });
     }
 
     handleTempoChange = (e) => {
@@ -210,7 +214,7 @@ class DrumSequencer extends Component {
             return
         }
         Tone.Transport.bpm.value = new_bpm;
-        this.setState({bpm: new_bpm});
+        this.setState({bpm: new_bpm, isDownloadable: false});
     }
 
     handleSavePattern = async (e, formData) => {
@@ -327,7 +331,7 @@ class DrumSequencer extends Component {
                 <Modal
                     show={this.state.showSaveModal}
                     onHide={this.handleSaveModalHide}
-                    title="Pattern Information" {...this.props}>
+                    title="Save Beat" {...this.props}>
                     {this.props.isLoggedIn ?
                         !this.state.isSaving ?
                         <SaveForm
@@ -342,7 +346,7 @@ class DrumSequencer extends Component {
                 <Modal
                     show={this.state.showGeneratingModal}
                     onHide={this.handleGeneratingModalHide}
-                    title="Pattern Information" {...this.props}>
+                    title="Generate Beat" {...this.props}>
                     {this.props.isLoggedIn ?
                         !this.state.isGenerating ?
                         <SaveForm
@@ -362,7 +366,7 @@ class DrumSequencer extends Component {
                     show={this.state.showDownloadModal}
                     onHide={this.handleDownloadModalHide}
                     title="Download Beat" {...this.props}>
-                    <h1 style={{color:"white"}}>Beat has been Modified. Please Save the Beat to Download it.</h1>
+                    <h1 style={{color:"white"}}>Please Save the Beat to Download it.</h1>
                 </Modal>
             </div>
         );
@@ -375,6 +379,7 @@ const mapStateToProps = state => {
         totalSteps: state.midi.totalSteps,
         pattern: state.midi.pattern,
         startSeq: state.midi.startSeq,
+        isDownloadable: state.midi.isDownloadable,
         url: state.midi.url,
         userId: state.auth.userId,
         isLoggedIn: state.auth.isLoggedIn
