@@ -1,37 +1,40 @@
 import React, { Component } from 'react';
 import Tone from 'tone';
-import Grid from '../Grid/grid';
+import Grid from './Grid/grid';
 import classes from './drumseqencer.module.css';
 import {connect} from 'react-redux';
-import {createMidiFile, generateDrumRNN} from "../../../utils/MidiQueries";
-import {convertPatternToMidiSequence, convertPatternToPrimerSequence} from "../../../utils/MidiUtils";
-import Modal from "../../../UI/Modal/Modal";
-import SaveForm from "../../../UI/SaveForm/SaveForm";
-import Spinner from "../../../UI/Spinner/Spinner";
-import * as midiActions from "../../../store/actions";
+import {createMidiFile, generateDrumRNN} from "../../utils/MidiQueries";
+import {
+    convertMidiSequenceToPattern,
+    convertPatternToMidiSequence,
+    convertPatternToPrimerSequence
+} from "../../utils/MidiUtils";
+import Modal from "../../UI/Modal/Modal";
+import SaveForm from "../../UI/SaveForm/SaveForm";
+import Spinner from "../../UI/Spinner/Spinner";
+import * as midiActions from "../../store/actions";
 
 class DrumSequencer extends Component {
 
+    state = {
+        bpm: this.props.bpm,
+        volume: -6,
+        totalSteps: this.props.totalSteps,
+        totalTracks: 9,
+        startSeq: false,
+        pattern: this.props.pattern,
+        drumOrder :['BD', 'S1', 'HC', 'OH', "TL", "TM", "TH", "S2", "RD"],
+        showSaveModal:false,
+        showGeneratingModal: false,
+        showDownloadModal: false,
+        isSaving: false,
+        isGenerating: false,
+        maxSteps: 64,
+        generateDisabled:false,
+        isDownloadable: this.props.isDownloadable
+    };
     constructor(props) {
         super(props);
-
-        this.state = {
-            bpm: props.bpm,
-            volume: -6,
-            totalSteps: props.totalSteps,
-            totalTracks: 9,
-            startSeq: false,
-            pattern: props.pattern,
-            drumOrder :['BD', 'S1', 'HC', 'OH', "TL", "TM", "TH", "S2", "RD"],
-            showSaveModal: props.startSeq,
-            showGeneratingModal: false,
-            showDownloadModal: false,
-            isSaving: false,
-            isGenerating: false,
-            maxSteps: 64,
-            generateDisabled:false,
-            isDownloadable: props.isDownloadable
-        };
 
         Tone.Transport.bpm.value = this.state.bpm;
         Tone.Master.volume.value = this.state.volume;
@@ -64,6 +67,15 @@ class DrumSequencer extends Component {
             Tone.Transport.cancel()
             this.clearTriggers()
             this.startSequencer()
+        }
+        if (prevProps !== this.props) {
+            this.setState({
+                bpm : this.props.bpm,
+                totalSteps: this.props.totalSteps,
+                pattern: this.props.pattern,
+                url: this.props.url,
+                isDownloadable: true
+            })
         }
     }
 
@@ -234,6 +246,19 @@ class DrumSequencer extends Component {
             "name": formData.name
         }
         const data = await createMidiFile(request_body);
+        if(data){
+            const pattern = convertMidiSequenceToPattern(data.midi_sequence, data.length);
+            const midiData = {
+                bpm : data.tempo,
+                totalSteps: data.length,
+                pattern: pattern,
+                url: data.url,
+                isDownloadable: true
+            }
+            this.props.setMidiSequencerData(midiData);
+        }
+
+
         this.handleSaveModalHide();
         this.setState({isSaving:false});
     }
@@ -281,6 +306,17 @@ class DrumSequencer extends Component {
             "name": formData.name
         }
         const data = await generateDrumRNN(request_body);
+        if(data){
+            const pattern = convertMidiSequenceToPattern(data.midi_sequence, data.length);
+            const midiData = {
+                bpm : data.tempo,
+                totalSteps: data.length,
+                pattern: pattern,
+                url: data.url,
+                isDownloadable: true
+            }
+            this.props.setMidiSequencerData(midiData);
+        }
         this.handleGeneratingModalHide();
         this.setState({isGenerating:false});
     }
@@ -378,7 +414,6 @@ const mapStateToProps = state => {
         bpm: state.midi.bpm,
         totalSteps: state.midi.totalSteps,
         pattern: state.midi.pattern,
-        startSeq: state.midi.startSeq,
         isDownloadable: state.midi.isDownloadable,
         url: state.midi.url,
         userId: state.auth.userId,
