@@ -45,8 +45,11 @@ class Login extends Component {
         if(response){
             const token = response.token
             const userId = response.userId
-            this.props.setUserAccessToken(token)
-            this.props.setUserId(userId)
+            const userData = {
+                userAccessToken: token,
+                userId: userId
+            }
+            this.props.setUserData(userData);
         }
         else{
             this.setState({errors: "Incorrect email or password."});
@@ -106,8 +109,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setUserAccessToken: (token) => dispatch(authActions.setUserAccessToken(token)),
-        setUserId: (id) => dispatch(authActions.setUserId(id)),
+        setUserData: (userData) => dispatch(authActions.setUserData(userData)),
     }
 };
 

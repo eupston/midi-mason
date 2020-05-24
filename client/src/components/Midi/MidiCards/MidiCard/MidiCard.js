@@ -6,7 +6,6 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import Radium, {StyleRoot} from 'radium';
 import { fadeIn } from 'react-animations';
-import {deleteMidiFile} from "../../../../utils/MidiQueries";
 import PushButton from "../../../../UI/PushButton/PushButton";
 
 const styles = {
@@ -31,28 +30,13 @@ class MidiCard extends Component {
     handlePlayDrumSequencer = () => {
         const pattern = convertMidiSequenceToPattern(this.state.seq, this.state.length);
         const midiData = {
-            bpm : this.state.tempo,
+            bpm: this.state.tempo,
             totalSteps: this.state.length,
             pattern: pattern,
             url: this.state.url,
             isDownloadable: true
         }
         this.props.setMidiSequencerData(midiData);
-    }
-
-    //TODO delete handler has bug
-    handleDeletePattern = async (id, userId) => {
-        const response = await deleteMidiFile(id, userId);
-        if(response){
-            const midiFilesCopy = [...this.state.midiFiles];
-            const midiFilesUpdated = midiFilesCopy.filter(midifile =>{
-                return midifile._id.toString() !== id;
-            })
-            this.setState({midiFiles:midiFilesUpdated})
-        }
-        else{
-            alert("Could Not Delete Midi File. Please Try Again.")
-        }
     }
 
     render() {
@@ -73,7 +57,7 @@ class MidiCard extends Component {
                     </div>
                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><PushButton/></Link>
                     {this.props.userId === this.state.authorId ?
-                        <button type="button" onClick={() => this.handleDeletePattern(this.state.id, this.props.userId)}>Delete</button>
+                        <button type="button" onClick={() => this.props.onDelete(this.state.id, this.props.userId)}>Delete</button>
                         :
                         null
                     }

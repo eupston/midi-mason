@@ -14,6 +14,7 @@ import SaveForm from "../../UI/SaveForm/SaveForm";
 import Spinner from "../../UI/Spinner/Spinner";
 import * as midiActions from "../../store/actions";
 
+//TODO allow to update beat
 class DrumSequencer extends Component {
 
     state = {

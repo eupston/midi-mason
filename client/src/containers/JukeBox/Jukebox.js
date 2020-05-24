@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import "./jukebox.scss";
-import {getMidiFiles} from "../../utils/MidiQueries";
+import {deleteMidiFile, getMidiFiles} from "../../utils/MidiQueries";
 import MidiCard from "../../components/Midi/MidiCards/MidiCard/MidiCard";
 import CollectionHeader from "../../UI/CollectionHeader/CollectionHeader";
 
@@ -58,9 +58,25 @@ class Jukebox extends Component {
         }, 10);
     }
 
+    handleDeletePattern = async (id, userId) => {
+        const response = await deleteMidiFile(id, userId);
+        console.log(response)
+        if(response){
+            console.log(this.state)
+            const midiFilesCopy = [...this.state.midiFiles];
+            const midiFilesUpdated = midiFilesCopy.filter(midifile =>{
+                return midifile._id.toString() !== id;
+            })
+            this.setState({midiFiles:midiFilesUpdated})
+        }
+        else{
+            alert("Could Not Delete Midi File. Please Try Again.")
+        }
+    }
+
+
     render() {
         const midiFileElements = this.state.midiFiles.map((midifile,index) => {
-            console.log(midifile)
             return(
                 <MidiCard
                     key={midifile._id}
@@ -71,6 +87,7 @@ class Jukebox extends Component {
                     authorId = {midifile.author}
                     sequence={midifile.midi_sequence}
                     url={midifile.url}
+                    onDelete={this.handleDeletePattern}
                 />
             )
         })
