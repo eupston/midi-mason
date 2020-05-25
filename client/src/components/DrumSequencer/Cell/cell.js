@@ -35,8 +35,11 @@ const Cell = styled.div.attrs(({ activated, triggered, hovered }) => ({
   border-radius: 10px;
   grid-column: ${props => props.column};
   grid-row: ${props => props.row};
-  margin: 7px;
+  margin: 7px; 
   transition:background .1s ease;
+  @media (max-width: 768px) {
+       margin: 2px; 
+  }
 `;
 
 

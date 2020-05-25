@@ -330,31 +330,32 @@ class DrumSequencer extends Component {
                         <span>dummy</span>
                         <button type="button" onClick={this.handleStartStop}>{!this.state.startSeq ? "Play" : "Stop"}</button>
                     </div>
-                    <div className={classes.TransportItem}>
+                    <div className={classes.TransportItemInput}>
                         <label>Total Steps</label>
                         <input type="number" value={this.state.totalSteps} onChange={this.handleStepCountChange}/>
                     </div>
-                    <div className={classes.TransportItem}>
+                    <div className={classes.TransportItemInput}>
                         <label>BPM</label>
                         <input type="number" value={this.state.bpm} onChange={this.handleTempoChange}/>
                     </div>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <button type="button" onClick={this.handleGeneratingModalShow} disabled={this.state.generateDisabled}>Generate</button>
+                    </div>
+
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
                         <button type="button" onClick={this.handleSaveModalShow}>Save</button>
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
-                        <button type="button" onClick={this.handleGeneratingModalShow} disabled={this.state.generateDisabled}>Generate AI Drums</button>
+                        <a href={this.state.isDownloadable ? this.props.url : null} target="_blank" download>
+                            <button type="button" onClick={this.handleDownloadModalShow}>Download</button>
+                        </a>
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
                         <button type="button" onClick={this.clearSteps}>Clear</button>
-                    </div>
-                    <div className={classes.TransportItem}>
-                        <span>dummy</span>
-                        <a href={this.state.isDownloadable ? this.props.url : null} target="_blank" download>
-                            <button type="button" onClick={this.handleDownloadModalShow}>Download</button>
-                        </a>
                     </div>
                 </div>
                 <Grid

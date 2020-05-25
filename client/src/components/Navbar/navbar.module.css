@@ -98,7 +98,7 @@
     position: sticky;
     z-index: 1000;
     top:0;
-    background-color: #36363c;
+    background-color: rgba(40,40,44, .5);
     border-bottom: 2px white solid;
     height:90px;
     margin-bottom: 20px;
@@ -111,7 +111,7 @@
     position: sticky;
     z-index: 1000;
     top:0px;
-    background-color: #36363c;
+    background-color: rgba(40,40,44, .5);
 
 }
 .NavbarMobileItems button {

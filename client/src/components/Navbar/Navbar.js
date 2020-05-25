@@ -74,7 +74,7 @@ class StickyNavbar extends Component {
                   <div className={this.state.navBarClasses.join(' ') } id="mainnavbar">
                       <nav className={classes.Navbar}  >
                              <div className={classes.NavbarLeft}>
-                                 <Logo subtitle={false} size={"2"}/>
+                                 <Logo subtitle={false} logo_size="70" size={"2"}/>
                              </div>
                              <div className={classes.NavbarMiddle}>
                                  <Link onMouseOver={this.handleOffHover}  to="/">Home</Link>
@@ -104,7 +104,7 @@ class StickyNavbar extends Component {
                             role="presentation"
                             xmlns="http://www.w3.org/2000/svg"
                             width="18"
-                            height="12"
+                            height="40"
                             viewBox="0 0 18 12">
                                 <path fill="currentColor"
                             fill-rule="evenodd"
@@ -112,7 +112,7 @@ class StickyNavbar extends Component {
                         </svg>
                         </span>
                     </button>
-                    <Logo subtitle={false} size={"2"} />
+                    <Logo subtitle={false} logo_size="60" size={"2"} />
              </div>
                 <div id="mySidenav" className="sidenav">
                     <a href="javascript:void(0)" className="closebtn" onClick={this.closeNav}>&times;</a>
