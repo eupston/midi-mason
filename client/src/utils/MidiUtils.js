@@ -7,7 +7,6 @@ export const convertMidiSequenceToPattern = (midiSeq, totalSteps) => {
         .fill(new Array(totalSteps)
             .fill({ triggered: false, activated: false }));
     const pattern = JSON.parse(JSON.stringify(emptyPattern));
-    console.log(midiSeq);
     midiSeq.map(item => {
         const currentStep = item['quantized_start_step'];
         const currentPitch = item['pitch'];

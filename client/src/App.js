@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
-import DrumSequencer from "./components/Sequencer/DrumSequencer/DrumSequencer";
-import MidiCards from "./components/Midi/MidiCards/MidiCards";
+import DrumSequencer from "./components/DrumSequencer/DrumSequencer";
 import {Route, Switch} from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Login from "./components/Auth/Login/Login";
@@ -10,7 +9,6 @@ import Logout from "./components/Auth/Logout/Logout";
 import Signup from "./components/Auth/Signup/Signup";
 import Account from "./components/Auth/Account/Account";
 import MyBeats from "./containers/MyBeats/MyBeats";
-import MidiCollection from "./containers/MidiCollection/MidiCollection";
 import MidiCollections from "./containers/MidiCollections/MidiCollections";
 
 class App extends Component {

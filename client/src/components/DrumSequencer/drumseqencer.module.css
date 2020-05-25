@@ -1,0 +1,78 @@
+.DrumSequencer{
+    background: #28282c;
+    display: block;
+    margin: 40px;
+}
+
+
+.Transport {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+}
+.Transport label {
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 1px;
+    opacity: .3;
+}
+
+.Transport button {
+    outline: none;
+    background: #36363c;
+    color: #fff;
+    padding: 1em;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);
+    cursor: pointer;
+    border: 2px solid transparent;
+    width:100%;
+
+}
+
+.Transport button:hover,
+.Transport button:active{
+    color: #0087ff;
+    border: 2px solid #0087ff;
+}
+.Transport button:disabled{
+    opacity: 0.5;
+}
+
+
+.Transport input {
+    outline: none;
+    background: #36363c;
+    color: #fff;
+    padding: 1em;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+    cursor: pointer;
+    border: 2px solid transparent;
+    width:100%;
+
+}
+
+.TransportItem{
+    display: grid;
+    margin: 7px;
+    flex-grow: 20;
+}
+
+.TransportItemInput{
+    display: grid;
+    margin: 7px;
+    flex-shrink: 10;
+}
+
+
+.TransportItem span{
+    color: transparent;
+}
