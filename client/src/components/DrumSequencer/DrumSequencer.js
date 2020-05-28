@@ -32,7 +32,9 @@ class DrumSequencer extends Component {
         isGenerating: false,
         maxSteps: 64,
         generateDisabled:false,
-        isDownloadable: this.props.isDownloadable
+        isDownloadable: this.props.isDownloadable,
+        sequence_title: this.props.sequence_title
+
     };
     constructor(props) {
         super(props);
@@ -88,7 +90,8 @@ class DrumSequencer extends Component {
             bpm: this.state.bpm,
             totalSteps: this.state.totalSteps,
             pattern: this.state.pattern,
-            url: this.props.url
+            url: this.props.url,
+            sequence_title: this.state.sequence_title
         }
         this.props.setMidiSequencerData(midi_data);
     }
@@ -230,40 +233,6 @@ class DrumSequencer extends Component {
         this.setState({bpm: new_bpm, isDownloadable: false});
     }
 
-    handleSavePattern = async (e, formData) => {
-        e.preventDefault();
-        Tone.Transport.stop()
-        Tone.Transport.clear()
-        this.setState({isSaving:true});
-        const midi_sequence = convertPatternToMidiSequence(this.state.pattern);
-
-        const request_body = {
-            "userId": this.props.userId,
-            "midi_sequence": midi_sequence,
-            "length": this.state.totalSteps,
-            "tempo": this.state.bpm,
-            "genre": formData.genre,
-            "rating": 5,
-            "name": formData.name
-        }
-        const data = await createMidiFile(request_body);
-        if(data){
-            const pattern = convertMidiSequenceToPattern(data.midi_sequence, data.length);
-            const midiData = {
-                bpm : data.tempo,
-                totalSteps: data.length,
-                pattern: pattern,
-                url: data.url,
-                isDownloadable: true
-            }
-            this.props.setMidiSequencerData(midiData);
-        }
-
-
-        this.handleSaveModalHide();
-        this.setState({isSaving:false});
-    }
-
     handleSaveModalShow = () => {
         this.setState({showSaveModal:true});
     };
@@ -291,6 +260,41 @@ class DrumSequencer extends Component {
         this.setState({showGeneratingModal:false});
     };
 
+    handleSavePattern = async (e, formData) => {
+        e.preventDefault();
+        Tone.Transport.stop()
+        Tone.Transport.clear()
+        this.setState({isSaving:true});
+        const midi_sequence = convertPatternToMidiSequence(this.state.pattern);
+
+        const request_body = {
+            "userId": this.props.userId,
+            "midi_sequence": midi_sequence,
+            "length": this.state.totalSteps,
+            "tempo": this.state.bpm,
+            "genre": formData.genre,
+            "rating": 5,
+            "name": formData.name
+        }
+        const data = await createMidiFile(request_body);
+        if(data){
+            const pattern = convertMidiSequenceToPattern(data.midi_sequence, data.length);
+            const midiData = {
+                bpm : data.tempo,
+                totalSteps: data.length,
+                pattern: pattern,
+                url: data.url,
+                isDownloadable: true,
+                sequence_title: formData.name
+            }
+            this.props.setMidiSequencerData(midiData);
+        }
+
+
+        this.handleSaveModalHide();
+        this.setState({isSaving:false, sequence_title: formData.name});
+    }
+
     handleAIDrumGeneration = async (e, formData) => {
         e.preventDefault();
         Tone.Transport.stop()
@@ -314,17 +318,20 @@ class DrumSequencer extends Component {
                 totalSteps: data.length,
                 pattern: pattern,
                 url: data.url,
-                isDownloadable: true
+                isDownloadable: true,
+                sequence_title: formData.name
+
             }
             this.props.setMidiSequencerData(midiData);
         }
         this.handleGeneratingModalHide();
-        this.setState({isGenerating:false});
+        this.setState({isGenerating:false, sequence_title: formData.name});
     }
 
     render() {
         return (
             <div className={classes.DrumSequencer}>
+                <h3>{this.state.sequence_title}</h3>
                 <div className={classes.Transport}>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
@@ -418,6 +425,7 @@ const mapStateToProps = state => {
         pattern: state.midi.pattern,
         isDownloadable: state.midi.isDownloadable,
         url: state.midi.url,
+        sequence_title: state.midi.sequence_title,
         userId: state.auth.userId,
         isLoggedIn: state.auth.isLoggedIn
     }

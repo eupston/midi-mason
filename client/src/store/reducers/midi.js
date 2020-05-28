@@ -5,7 +5,8 @@ const initialState = {
     totalSteps: 8,
     pattern: [],
     url: "",
-    isDownloadable: false
+    isDownloadable: false,
+    sequence_title: ""
 };
 
 const reducer = (state= initialState, action) => {
@@ -17,7 +18,8 @@ const reducer = (state= initialState, action) => {
                 totalSteps: action.midiData.totalSteps,
                 pattern: action.midiData.pattern,
                 url: action.midiData.url,
-                isDownloadable: action.midiData.isDownloadable
+                isDownloadable: action.midiData.isDownloadable,
+                sequence_title: action.midiData.sequence_title
             };
         default:
             return {...state};
