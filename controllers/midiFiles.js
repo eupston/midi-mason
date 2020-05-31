@@ -3,10 +3,11 @@ const asyncHandler = require('../middleware/asyncHandler');
 const MidiFile = require('../models/MidiFile');
 const User = require('../models/User');
 const {PythonShell} = require('python-shell')
-const S3Upload = require("../utils/S3");
+const {S3Upload, S3DeleteFile}  = require("../utils/S3");
 const {deleteFile} = require('../utils/files');
 var path = require('path');
 const fs = require('fs');
+const { promisify } = require('util');
 
 
 
@@ -267,8 +268,31 @@ exports.updateMidiFile = asyncHandler(async (req, res, next) => {
     if (!midifilefound){
         return next(new ErrorResponse(`MidiFile not found in id of ${req.params.id}`, 404));
     }
-
     if(user.midifiles.includes(req.params.id)){
+        if (req.body.midi_sequence){
+            let options = {
+                mode: 'text',
+                args:[
+                    '--note_sequence_to_midi_file', "True",
+                    "--note_sequence", JSON.stringify(req.body.midi_sequence),
+                    "--tempo", req.body.tempo,
+                    "--length", req.body.length,
+                    '--output_path', "midi_generation/output"
+                ]
+            };
+
+            const createMidiFile = promisify(PythonShell.run);
+            const results = await createMidiFile('midi_generation/midi_utils.py', options);
+            const filepath = results[0];
+            const file_content = fs.readFileSync(filepath);
+            const filename = path.join("midi", req.body.userId, path.basename(filepath));
+            const old_file_name = path.basename(midifilefound.url);
+            const old_file_path = path.join("midi", req.body.userId, old_file_name);
+            const S3_URL = await S3Upload(filename, file_content);
+            await S3DeleteFile(old_file_path);
+            deleteFile(filepath);
+            req.body.url = S3_URL.Location
+        }
         const midifile = await MidiFile.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
@@ -295,7 +319,6 @@ exports.updateMidiFile = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/midi/:id
 // @access  PRIVATE
 exports.deleteMidiFile = asyncHandler(async (req, res, next) => {
-    //TODO DELETE midifile off S3
     const user = await User.findById(req.query.userId); // get from session
     if(!user){
         return next(new ErrorResponse("Could not Find User Id: " + req.query.userId, 404));
@@ -308,7 +331,9 @@ exports.deleteMidiFile = asyncHandler(async (req, res, next) => {
 
     if(user.midifiles.includes(req.params.id)){
         const midifile = await MidiFile.findByIdAndDelete(req.params.id);
-
+        const s3_url = midifile.url;
+        const filepath = s3_url.replace(process.env.S3_URL,"");
+        await S3DeleteFile(filepath);
         if (!midifile){
             return next(new ErrorResponse(`MidiFile not found in id of ${req.params.id}`, 404));
         }

@@ -28,13 +28,17 @@ class MidiCard extends Component {
     }
 
     handlePlayDrumSequencer = () => {
+        const isUpdateable = this.props.userId === this.state.authorId;
         const pattern = convertMidiSequenceToPattern(this.state.seq, this.state.length);
         const midiData = {
             bpm: this.state.tempo,
             totalSteps: this.state.length,
             pattern: pattern,
             url: this.state.url,
-            isDownloadable: true
+            isDownloadable: true,
+            isUpdateable: isUpdateable,
+            sequence_title: this.state.name,
+            midiId: this.props.id,
         }
         this.props.setMidiSequencerData(midiData);
     }
@@ -57,7 +61,9 @@ class MidiCard extends Component {
                     </div>
                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><PushButton/></Link>
                     {this.props.userId === this.state.authorId ?
-                        <button type="button" onClick={() => this.props.onDelete(this.state.id, this.props.userId)}>Delete</button>
+                        <button className="DeleteButton" type="button" onClick={() => this.props.onDelete(this.state.id, this.props.userId)}>
+                            <i className="fa fa-trash fa-1x" aria-hidden="true"></i>
+                        </button>
                         :
                         null
                     }

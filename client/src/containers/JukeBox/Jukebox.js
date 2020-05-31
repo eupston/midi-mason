@@ -3,6 +3,8 @@ import "./jukebox.scss";
 import {deleteMidiFile, getMidiFiles} from "../../utils/MidiQueries";
 import MidiCard from "../../components/Midi/MidiCards/MidiCard/MidiCard";
 import CollectionHeader from "../../UI/CollectionHeader/CollectionHeader";
+import classes from "../../components/Midi/MidiCards/midicards.module.css";
+import Spinner from "../../UI/Spinner/Spinner";
 
 class Jukebox extends Component {
     state = {
@@ -95,7 +97,7 @@ class Jukebox extends Component {
             <div className="Jukebox">
                 <CollectionHeader title={this.props.title}/>
                 <div className="gallery centerized" id={"gallery_" + this.props.title}>
-                    {midiFileElements}
+                    {!midiFileElements.length < 1 ? midiFileElements : <Spinner/>}
                 </div>
             </div>
         );

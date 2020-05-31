@@ -9,14 +9,12 @@ router.post('/', midiController.createMidiFile);
 
 router.get('/:id', midiController.getMidiFile);
 
-router.put('/:id', isAuth, midiController.updateMidiFile);
+router.put('/:id', midiController.updateMidiFile);
 
 router.delete('/:id', midiController.deleteMidiFile);
 
 router.post('/generate_drum_rnn', midiController.generateDrumRNN);
 
 router.post('/uploadmidifile', isAuth, midiController.uploadMidiFile);
-
-
 
 module.exports = router;

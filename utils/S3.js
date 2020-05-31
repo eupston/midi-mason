@@ -6,13 +6,12 @@ const s3Client = new AWS.S3({
     region : process.env.S3_REGION
 });
 
-const uploadParams = {
-    Bucket: '',
-    Key: '',
-    Body: null,
-};
-
-const S3Upload = (filename, filepath) => {
+exports.S3Upload = (filename, filepath) => {
+    const uploadParams = {
+        Bucket: '',
+        Key: '',
+        Body: null,
+    };
     const params = uploadParams;
     uploadParams.Bucket = process.env.S3_BUCKET_NAME;
     uploadParams.Key = filename;
@@ -20,4 +19,13 @@ const S3Upload = (filename, filepath) => {
     return s3Client.upload(params).promise();
 };
 
-module.exports = S3Upload;
+exports.S3DeleteFile = (filename) => {
+    var deleteParams = {
+        Bucket: '',
+        Key: ''
+    };
+    const params = deleteParams;
+    deleteParams.Bucket = process.env.S3_BUCKET_NAME;
+    deleteParams.Key = filename;
+    return s3Client.deleteObject(params).promise();
+}
