@@ -24,7 +24,7 @@ class DrumSequencer extends Component {
         totalTracks: 9,
         startSeq: false,
         pattern: this.props.pattern,
-        drumOrder :['BD', 'S1', 'HC', 'OH', "TL", "TM", "TH", "S2", "RD"],
+        drumOrder : ['BD', 'S1', 'HC', 'OH', "TL", "TM", "TH", "S2", "RD"],
         showSaveModal:false,
         showGeneratingModal: false,
         showDownloadModal: false,
@@ -34,8 +34,8 @@ class DrumSequencer extends Component {
         generateDisabled:false,
         isDownloadable: this.props.isDownloadable,
         sequence_title: this.props.sequence_title
-
     };
+
     constructor(props) {
         super(props);
 
@@ -295,6 +295,10 @@ class DrumSequencer extends Component {
         this.setState({isSaving:false, sequence_title: formData.name});
     }
 
+    handleUpdateMidifile = async (e) => {
+
+    }
+
     handleAIDrumGeneration = async (e, formData) => {
         e.preventDefault();
         Tone.Transport.stop()
@@ -349,10 +353,13 @@ class DrumSequencer extends Component {
                         <span>dummy</span>
                         <button type="button" onClick={this.handleGeneratingModalShow} disabled={this.state.generateDisabled}>Generate</button>
                     </div>
-
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
                         <button type="button" onClick={this.handleSaveModalShow}>Save</button>
+                    </div>
+                    <div className={classes.TransportItem}>
+                        <span>dummy</span>
+                        <button type="button" onClick={this.handleSaveModalShow}>Update</button>
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
