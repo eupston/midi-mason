@@ -6,7 +6,9 @@ const initialState = {
     pattern: [],
     url: "",
     isDownloadable: false,
-    sequence_title: ""
+    isUpdateable: false,
+    sequence_title: "",
+    midiId: "",
 };
 
 const reducer = (state= initialState, action) => {
@@ -19,7 +21,9 @@ const reducer = (state= initialState, action) => {
                 pattern: action.midiData.pattern,
                 url: action.midiData.url,
                 isDownloadable: action.midiData.isDownloadable,
-                sequence_title: action.midiData.sequence_title
+                isUpdateable: action.midiData.isUpdateable,
+                sequence_title: action.midiData.sequence_title,
+                midiId: action.midiData.midiId
             };
         default:
             return {...state};

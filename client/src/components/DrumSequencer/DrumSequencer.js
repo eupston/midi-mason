@@ -3,7 +3,7 @@ import Tone from 'tone';
 import Grid from './Grid/grid';
 import classes from './drumseqencer.module.css';
 import {connect} from 'react-redux';
-import {createMidiFile, generateDrumRNN} from "../../utils/MidiQueries";
+import {createMidiFile, generateDrumRNN, updateMidiFile} from "../../utils/MidiQueries";
 import {
     convertMidiSequenceToPattern,
     convertPatternToMidiSequence,
@@ -14,7 +14,7 @@ import SaveForm from "../../UI/SaveForm/SaveForm";
 import Spinner from "../../UI/Spinner/Spinner";
 import * as midiActions from "../../store/actions";
 
-//TODO allow to update beat
+//TODO Add Author Name
 class DrumSequencer extends Component {
 
     state = {
@@ -28,12 +28,15 @@ class DrumSequencer extends Component {
         showSaveModal:false,
         showGeneratingModal: false,
         showDownloadModal: false,
+        showUpdateModal: false,
         isSaving: false,
         isGenerating: false,
+        isUpdating: false,
         maxSteps: 64,
         generateDisabled:false,
         isDownloadable: this.props.isDownloadable,
-        sequence_title: this.props.sequence_title
+        isUpdateable: this.props.isUpdateable,
+        sequence_title: this.props.sequence_title,
     };
 
     constructor(props) {
@@ -91,7 +94,10 @@ class DrumSequencer extends Component {
             totalSteps: this.state.totalSteps,
             pattern: this.state.pattern,
             url: this.props.url,
-            sequence_title: this.state.sequence_title
+            sequence_title: this.state.sequence_title,
+            isDownloadable: this.state.isDownloadable,
+            isUpdateable: this.state.isUpdateable,
+            midiId: this.props.midiId
         }
         this.props.setMidiSequencerData(midi_data);
     }
@@ -260,6 +266,44 @@ class DrumSequencer extends Component {
         this.setState({showGeneratingModal:false});
     };
 
+    handleUpdateModalShow = async () => {
+        this.setState({showUpdateModal:true});
+
+        if(this.state.isUpdateable){
+            this.setState({isUpdating:true});
+            const midi_sequence = convertPatternToMidiSequence(this.state.pattern);
+
+            const request_body = {
+                "userId": this.props.userId,
+                "midi_sequence": midi_sequence,
+                "length": this.state.totalSteps,
+                "tempo": this.state.bpm,
+            }
+
+            const data = await updateMidiFile(this.props.midiId, request_body);
+            if(data){
+                const pattern = convertMidiSequenceToPattern(data.midi_sequence, data.length);
+                const midiData = {
+                    bpm : data.tempo,
+                    totalSteps: data.length,
+                    pattern: pattern,
+                    url: data.url,
+                    isDownloadable: true,
+                    isUpdateable: true,
+                    sequence_title: this.state.sequence_title,
+                    midiId: this.props.midiId
+                }
+                this.props.setMidiSequencerData(midiData);
+            }
+            this.handleUpdateModalHide();
+            this.setState({isUpdating:false});
+        }
+    }
+
+    handleUpdateModalHide = () => {
+        this.setState({showUpdateModal:false});
+    }
+
     handleSavePattern = async (e, formData) => {
         e.preventDefault();
         Tone.Transport.stop()
@@ -285,18 +329,14 @@ class DrumSequencer extends Component {
                 pattern: pattern,
                 url: data.url,
                 isDownloadable: true,
-                sequence_title: formData.name
+                isUpdateable: true,
+                sequence_title: formData.name,
+                midiId: this.props.midiId
             }
             this.props.setMidiSequencerData(midiData);
         }
-
-
         this.handleSaveModalHide();
         this.setState({isSaving:false, sequence_title: formData.name});
-    }
-
-    handleUpdateMidifile = async (e) => {
-
     }
 
     handleAIDrumGeneration = async (e, formData) => {
@@ -323,8 +363,9 @@ class DrumSequencer extends Component {
                 pattern: pattern,
                 url: data.url,
                 isDownloadable: true,
-                sequence_title: formData.name
-
+                isUpdateable: true,
+                sequence_title: formData.name,
+                midiId: this.props.midiId
             }
             this.props.setMidiSequencerData(midiData);
         }
@@ -359,7 +400,7 @@ class DrumSequencer extends Component {
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
-                        <button type="button" onClick={this.handleSaveModalShow}>Update</button>
+                        <button type="button" onClick={this.handleUpdateModalShow}>Update</button>
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
@@ -383,12 +424,12 @@ class DrumSequencer extends Component {
                 <Modal
                     show={this.state.showSaveModal}
                     onHide={this.handleSaveModalHide}
-                    title="Save Beat" {...this.props}>
+                    title="Save New Beat" {...this.props}>
                     {this.props.isLoggedIn ?
                         !this.state.isSaving ?
                         <SaveForm
                             onSavePattern={this.handleSavePattern}
-                            button_text={"Save Pattern"}/>
+                            button_text={"Save Beat"}/>
                         :
                         <Spinner text={"Saving..."}/>
                     :
@@ -396,9 +437,22 @@ class DrumSequencer extends Component {
                     }
                 </Modal>
                 <Modal
+                    show={this.state.showUpdateModal}
+                    onHide={this.handleUpdateModalHide}
+                    title="Update Beat" {...this.props}>
+                    {this.props.isLoggedIn ?
+                        this.state.isUpdating ?
+                            <Spinner text={"Updating Beat..."}/>
+                            :
+                            <h1 style={{color:"white"}}>Please Save the Beat Before Updating.</h1>
+                        :
+                        <h1 style={{color:"white"}}>Please Login to Update a Beat.</h1>
+                    }
+                </Modal>
+                <Modal
                     show={this.state.showGeneratingModal}
                     onHide={this.handleGeneratingModalHide}
-                    title="Generate Beat" {...this.props}>
+                    title="Generate New Beat" {...this.props}>
                     {this.props.isLoggedIn ?
                         !this.state.isGenerating ?
                         <SaveForm
@@ -427,10 +481,12 @@ class DrumSequencer extends Component {
 
 const mapStateToProps = state => {
     return {
+        midiId: state.midi.midiId,
         bpm: state.midi.bpm,
         totalSteps: state.midi.totalSteps,
         pattern: state.midi.pattern,
         isDownloadable: state.midi.isDownloadable,
+        isUpdateable: state.midi.isUpdateable,
         url: state.midi.url,
         sequence_title: state.midi.sequence_title,
         userId: state.auth.userId,

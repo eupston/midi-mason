@@ -11,7 +11,6 @@ export const convertMidiSequenceToPattern = (midiSeq, totalSteps) => {
         const currentStep = item['quantized_start_step'];
         const currentPitch = item['pitch'];
         const currentTrack = midiTrackMapping[currentPitch];
-        console.log(item)
         pattern[currentTrack][currentStep]['activated'] = true;
     })
     return pattern;

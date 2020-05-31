@@ -28,6 +28,7 @@ class MidiCard extends Component {
     }
 
     handlePlayDrumSequencer = () => {
+        const isUpdateable = this.props.userId === this.state.authorId;
         const pattern = convertMidiSequenceToPattern(this.state.seq, this.state.length);
         const midiData = {
             bpm: this.state.tempo,
@@ -35,7 +36,9 @@ class MidiCard extends Component {
             pattern: pattern,
             url: this.state.url,
             isDownloadable: true,
-            sequence_title: this.state.name
+            isUpdateable: isUpdateable,
+            sequence_title: this.state.name,
+            midiId: this.props.id,
         }
         this.props.setMidiSequencerData(midiData);
     }

@@ -19,13 +19,13 @@ exports.S3Upload = (filename, filepath) => {
     return s3Client.upload(params).promise();
 };
 
-exports.S3DeleteFile = (filepath) => {
+exports.S3DeleteFile = (filename) => {
     var deleteParams = {
         Bucket: '',
         Key: ''
     };
     const params = deleteParams;
     deleteParams.Bucket = process.env.S3_BUCKET_NAME;
-    deleteParams.Key = filepath;
+    deleteParams.Key = filename;
     return s3Client.deleteObject(params).promise();
 }
