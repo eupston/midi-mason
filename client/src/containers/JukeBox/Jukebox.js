@@ -3,9 +3,9 @@ import "./jukebox.scss";
 import {deleteMidiFile, getMidiFiles} from "../../utils/MidiQueries";
 import MidiCard from "../../components/Midi/MidiCards/MidiCard/MidiCard";
 import CollectionHeader from "../../UI/CollectionHeader/CollectionHeader";
-import classes from "../../components/Midi/MidiCards/midicards.module.css";
 import Spinner from "../../UI/Spinner/Spinner";
 
+//TODO bug show no beat if no beats available
 class Jukebox extends Component {
     state = {
         THRESHOLD : 0.6,
@@ -90,6 +90,7 @@ class Jukebox extends Component {
                     sequence={midifile.midi_sequence}
                     url={midifile.url}
                     onDelete={this.handleDeletePattern}
+                    authorName={midifile.author_name}
                 />
             )
         })

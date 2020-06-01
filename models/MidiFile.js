@@ -36,6 +36,10 @@ const MidiFile = new mongoose.Schema({
         ref: 'User',
         required: [true, 'Please provide a Author'],
     },
+    author_name: {
+        type: String,
+        required: [true, 'Please provide a Author Name'],
+    },
     genre: {
         type: String,
         required: [true, 'Please provide a Genre'],

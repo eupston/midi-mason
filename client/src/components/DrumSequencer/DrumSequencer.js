@@ -35,7 +35,6 @@ class DrumSequencer extends Component {
         maxSteps: 64,
         generateDisabled:false,
         isDownloadable: this.props.isDownloadable,
-        isUpdateable: this.props.isUpdateable,
         sequence_title: this.props.sequence_title,
     };
 
@@ -96,8 +95,9 @@ class DrumSequencer extends Component {
             url: this.props.url,
             sequence_title: this.state.sequence_title,
             isDownloadable: this.state.isDownloadable,
-            isUpdateable: this.state.isUpdateable,
-            midiId: this.props.midiId
+            isUpdateable: this.props.isUpdateable,
+            midiId: this.props.midiId,
+            authorName : this.props.authorName
         }
         this.props.setMidiSequencerData(midi_data);
     }
@@ -269,7 +269,7 @@ class DrumSequencer extends Component {
     handleUpdateModalShow = async () => {
         this.setState({showUpdateModal:true});
 
-        if(this.state.isUpdateable){
+        if(this.props.isUpdateable){
             this.setState({isUpdating:true});
             const midi_sequence = convertPatternToMidiSequence(this.state.pattern);
 
@@ -291,7 +291,8 @@ class DrumSequencer extends Component {
                     isDownloadable: true,
                     isUpdateable: true,
                     sequence_title: this.state.sequence_title,
-                    midiId: this.props.midiId
+                    midiId: this.props.midiId,
+                    authorName : this.props.authorName
                 }
                 this.props.setMidiSequencerData(midiData);
             }
@@ -331,7 +332,8 @@ class DrumSequencer extends Component {
                 isDownloadable: true,
                 isUpdateable: true,
                 sequence_title: formData.name,
-                midiId: this.props.midiId
+                midiId: this.props.midiId,
+                authorName : data.author_name
             }
             this.props.setMidiSequencerData(midiData);
         }
@@ -365,7 +367,8 @@ class DrumSequencer extends Component {
                 isDownloadable: true,
                 isUpdateable: true,
                 sequence_title: formData.name,
-                midiId: this.props.midiId
+                midiId: this.props.midiId,
+                authorName : data.author_name
             }
             this.props.setMidiSequencerData(midiData);
         }
@@ -376,7 +379,8 @@ class DrumSequencer extends Component {
     render() {
         return (
             <div className={classes.DrumSequencer}>
-                <h3>{this.state.sequence_title}</h3>
+                <h2>{this.state.sequence_title}</h2>
+                <h6>{this.props.authorName ? "By " + this.props.authorName : null}</h6>
                 <div className={classes.Transport}>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
@@ -472,7 +476,7 @@ class DrumSequencer extends Component {
                     show={this.state.showDownloadModal}
                     onHide={this.handleDownloadModalHide}
                     title="Download Beat" {...this.props}>
-                    <h1 style={{color:"white"}}>Please Save the Beat to Download it.</h1>
+                    <h1 style={{color:"white"}}>Please Save or Update the Beat to Download it.</h1>
                 </Modal>
             </div>
         );
@@ -482,6 +486,7 @@ class DrumSequencer extends Component {
 const mapStateToProps = state => {
     return {
         midiId: state.midi.midiId,
+        authorName: state.midi.authorName,
         bpm: state.midi.bpm,
         totalSteps: state.midi.totalSteps,
         pattern: state.midi.pattern,

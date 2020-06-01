@@ -22,6 +22,7 @@ class MidiCard extends Component {
         tempo: this.props.tempo,
         length: this.props.length,
         authorId: this.props.authorId,
+        authorName: this.props.authorName,
         seq: this.props.sequence,
         url: this.props.url,
         pattern: [],
@@ -39,6 +40,8 @@ class MidiCard extends Component {
             isUpdateable: isUpdateable,
             sequence_title: this.state.name,
             midiId: this.props.id,
+            authorName: this.state.authorName,
+
         }
         this.props.setMidiSequencerData(midiData);
     }
@@ -57,7 +60,7 @@ class MidiCard extends Component {
                     </div>
                     <div className="DescriptionItem">
                         <h5>Author: </h5>
-                        <p> Steve</p>
+                        <p> {this.state.authorName}</p>
                     </div>
                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><PushButton/></Link>
                     {this.props.userId === this.state.authorId ?

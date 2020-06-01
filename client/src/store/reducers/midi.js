@@ -9,6 +9,8 @@ const initialState = {
     isUpdateable: false,
     sequence_title: "",
     midiId: "",
+    authorName: "",
+
 };
 
 const reducer = (state= initialState, action) => {
@@ -23,7 +25,8 @@ const reducer = (state= initialState, action) => {
                 isDownloadable: action.midiData.isDownloadable,
                 isUpdateable: action.midiData.isUpdateable,
                 sequence_title: action.midiData.sequence_title,
-                midiId: action.midiData.midiId
+                midiId: action.midiData.midiId,
+                authorName: action.midiData.authorName,
             };
         default:
             return {...state};
