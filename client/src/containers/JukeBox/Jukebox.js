@@ -3,23 +3,24 @@ import "./jukebox.scss";
 import {deleteMidiFile, getMidiFiles} from "../../utils/MidiQueries";
 import MidiCard from "../../components/Midi/MidiCards/MidiCard/MidiCard";
 import CollectionHeader from "../../UI/CollectionHeader/CollectionHeader";
-import classes from "../../components/Midi/MidiCards/midicards.module.css";
 import Spinner from "../../UI/Spinner/Spinner";
 
 class Jukebox extends Component {
     state = {
         THRESHOLD : 0.6,
-        MAX_SPEED : 5,
+        MAX_SPEED : 10,
         LEFT : 'left',
         RIGHT : 'right',
         midiFiles: [],
+        isLoading:false
     }
 
     async componentDidMount() {
         this.enableGalleryScroll();
+        this.setState({isLoading:true})
         const data = await getMidiFiles(this.props.filterParams);
         if(data){
-            this.setState({midiFiles:data})
+            this.setState({midiFiles:data, isLoading:false})
         }
     }
 
@@ -76,28 +77,41 @@ class Jukebox extends Component {
         }
     }
 
+    midiFileElements = () => {
+        if (this.state.midiFiles.length > 0){
+            return this.state.midiFiles.map((midifile, index) => {
+                return (
+                    <MidiCard
+                        key={midifile._id}
+                        id={midifile._id}
+                        name={midifile.name}
+                        tempo={midifile.tempo}
+                        length={midifile.length}
+                        authorId={midifile.author}
+                        sequence={midifile.midi_sequence}
+                        url={midifile.url}
+                        onDelete={this.handleDeletePattern}
+                        authorName={midifile.author_name}
+                    />
+                )
+            })
+        }
+        else{
+            return <h1>No Beats Available</h1>
+        }
+    }
+
 
     render() {
-        const midiFileElements = this.state.midiFiles.map((midifile,index) => {
-            return(
-                <MidiCard
-                    key={midifile._id}
-                    id={midifile._id}
-                    name={midifile.name}
-                    tempo={midifile.tempo}
-                    length={midifile.length}
-                    authorId = {midifile.author}
-                    sequence={midifile.midi_sequence}
-                    url={midifile.url}
-                    onDelete={this.handleDeletePattern}
-                />
-            )
-        })
         return (
             <div className="Jukebox">
                 <CollectionHeader title={this.props.title}/>
                 <div className="gallery centerized" id={"gallery_" + this.props.title}>
-                    {!midiFileElements.length < 1 ? midiFileElements : <Spinner/>}
+                    {this.state.isLoading ?
+                        <Spinner/>
+                        :
+                        this.midiFileElements()
+                    }
                 </div>
             </div>
         );

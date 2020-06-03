@@ -44,6 +44,7 @@ class MidiCards extends Component {
                     sequence={midifile.midi_sequence}
                     url={midifile.url}
                     onDelete={this.handleDeletePattern}
+                    authorName={midifile.author_name}
             />
         })
         return (
