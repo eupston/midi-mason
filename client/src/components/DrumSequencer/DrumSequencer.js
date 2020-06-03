@@ -14,7 +14,6 @@ import SaveForm from "../../UI/SaveForm/SaveForm";
 import Spinner from "../../UI/Spinner/Spinner";
 import * as midiActions from "../../store/actions";
 
-//TODO Add Author Name
 class DrumSequencer extends Component {
 
     state = {
