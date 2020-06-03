@@ -8,7 +8,7 @@ import Spinner from "../../UI/Spinner/Spinner";
 class Jukebox extends Component {
     state = {
         THRESHOLD : 0.6,
-        MAX_SPEED : 5,
+        MAX_SPEED : 10,
         LEFT : 'left',
         RIGHT : 'right',
         midiFiles: [],
