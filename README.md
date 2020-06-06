@@ -1,2 +1,2 @@
-# midi-mason-api
-A restful api for generating midi patterns, drums and melody sequences using Google Magenta AI
+# midi-mason
+A Web Application for generating midi drums using Google Magenta AI, creating, and sharing beats.
