@@ -17,7 +17,7 @@ $shadow: #0087ff;
 .CollectionHeader h1 {
   font-family: 'Rig Bold Face', sans-serif;
   text-transform: uppercase;
-  font-size: 6vw;
+  font-size: 80px;
   text-align: center;
   font-weight: normal;
   color: $face;
@@ -77,4 +77,32 @@ $shadow: #0087ff;
 @font-face {
   font-family:'Rig Bold Inline';
   src:url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/209981/Rig-BoldInline.otf');
+}
+
+@media (max-width: 800px) {
+  .CollectionHeader {
+    margin-bottom: 5px;
+  }
+    .CollectionHeader h1 {
+    font-size: 70px;
+  }
+}
+@media (max-width: 600px) {
+  .CollectionHeader h1 {
+    font-size: 60px;
+  }
+}
+
+@media (max-width: 420px) {
+  .CollectionHeader h1 {
+    font-size: 40px;
+  }
+}
+@media (max-width: 320px) {
+  .CollectionHeader {
+    margin-bottom: 0px;
+  }
+  .CollectionHeader h1 {
+    font-size: 35px;
+  }
 }

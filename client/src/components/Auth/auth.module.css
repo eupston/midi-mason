@@ -7,11 +7,13 @@
 }
 .Auth form {
     width: 60%;
-    min-width:400px;
+    min-width:200px;
 }
 .Auth a{
     text-decoration: none;
     color: #36454f;
+    font-size: 80%;
+
 }
 .Auth button {
     margin-top: 20px;
@@ -26,8 +28,6 @@
 .Auth label {
     margin-top: 20px;
 }
-
-
 .Error {
     color: red;
 }
@@ -35,3 +35,15 @@
     color: green;
 }
 
+@media (max-width: 600px) {
+    .Auth a{
+        font-size: 60%;
+    }
+}
+
+@media (max-width: 360px) {
+    .Auth a{
+        font-size: 8px;
+    }
+
+}

@@ -14,6 +14,7 @@ import SaveForm from "../../UI/SaveForm/SaveForm";
 import Spinner from "../../UI/Spinner/Spinner";
 import * as midiActions from "../../store/actions";
 
+//TODOD BUG on mobile not update steps bpm
 class DrumSequencer extends Component {
 
     state = {
@@ -455,7 +456,7 @@ class DrumSequencer extends Component {
                 <Modal
                     show={this.state.showGeneratingModal}
                     onHide={this.handleGeneratingModalHide}
-                    title="Generate New Beat" {...this.props}>
+                    title="Generate AI Beat" {...this.props}>
                     {this.props.isLoggedIn ?
                         !this.state.isGenerating ?
                         <SaveForm

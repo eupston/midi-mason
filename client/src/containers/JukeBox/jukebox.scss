@@ -68,3 +68,30 @@
   }
 
 }
+
+
+@media (max-width: 1200px) {
+  .gallery {
+    padding: 10px;
+    &>div {
+      width: 250px;
+      height: 350px;
+      transform-origin: 50% 50%;
+      margin: 50px;
+      transform:
+              translate3d(0, 0, 0)
+              perspective( 0vw )
+              rotateY( 0deg );
+      &:hover, &:active {
+        transform: translate3d(1vw, 0, 0) perspective(30vw) scale(1.0) rotateY(0deg);
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+    .gallery {
+      padding: 0px;
+    }
+
+}

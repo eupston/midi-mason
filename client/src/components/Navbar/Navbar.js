@@ -51,7 +51,7 @@ class StickyNavbar extends Component {
 
 
     handleMobileNavbarTransition = () => {
-        if (window.innerWidth < 1000){
+        if (window.innerWidth < 1100){
             this.setState({mobile_navbar_active:true});
         }
         else{
@@ -104,15 +104,15 @@ class StickyNavbar extends Component {
                             role="presentation"
                             xmlns="http://www.w3.org/2000/svg"
                             width="18"
-                            height="40"
-                            viewBox="0 0 18 12">
+                            height="30"
+                            viewBox="0 0 18 18">
                                 <path fill="currentColor"
                             fill-rule="evenodd"
                             d="M0 0h18v2H0zM0 5h18v2H0zM0 10h18v2H0z"></path>
                         </svg>
                         </span>
                     </button>
-                    <Logo subtitle={false} logo_size="60" size={"2"} />
+                    <Logo subtitle={false} logo_size="0" size={"2"} />
              </div>
                 <div id="mySidenav" className="sidenav">
                     <a href="javascript:void(0)" className="closebtn" onClick={this.closeNav}>&times;</a>
