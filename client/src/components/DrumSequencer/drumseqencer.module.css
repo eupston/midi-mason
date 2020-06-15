@@ -66,10 +66,16 @@
     flex-grow: 20;
 }
 
+.TransportItem button{
+    min-height: 60px;
+
+}
+
 .TransportItemInput{
     display: grid;
     margin: 7px;
     flex-shrink: 10;
+
 }
 
 

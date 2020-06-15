@@ -1,0 +1,20 @@
+.NumberInput {
+    display: flex;
+    justify-content: center;
+    align-items:center;
+}
+.NumberInput input {
+    min-height: 60px;
+}
+
+.Arrows {
+}
+
+.Arrows button {
+    margin: 5px 0px 5px 5px;
+    height: 5px;
+    width: 5px;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+}
