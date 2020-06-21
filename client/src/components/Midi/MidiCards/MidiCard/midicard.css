@@ -35,7 +35,7 @@
 
 .MidiCard h5 {
     color: #818181;
-    margin-right: 10px;
+    margin: 6px;
     font-family: 'Rig Bold Face', sans-serif;
     font-size: 120%;
 }
@@ -43,7 +43,7 @@
 .MidiCard p {
     font-size: 100%;
     font-family: 'Rig Bold Face', sans-serif;
-
+    margin: 6px;
 }
 
 

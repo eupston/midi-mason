@@ -92,6 +92,7 @@ class Jukebox extends Component {
                         url={midifile.url}
                         onDelete={this.handleDeletePattern}
                         authorName={midifile.author_name}
+                        genre={midifile.genre}
                     />
                 )
             })
