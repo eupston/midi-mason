@@ -186,6 +186,23 @@ exports.createMidiFile = asyncHandler(async (req, res, next) => {
 });
 
 
+// @desc    Gets Unique Values in all midi files for the given field
+// @route   GET /api/v1/midi/fields/:field
+// @access  PUBLIC
+exports.getUniqueFieldValues = asyncHandler(async (req, res, next) => {
+    //TODO get count of each unique value
+    const fieldValues = await MidiFile.distinct(req.params.field);
+    if (fieldValues.length < 1){
+        return next(new ErrorResponse(`field value '${req.params.field}' not found `,404));
+    }
+    res
+        .status(200)
+        .json({
+            success: true,
+            data: fieldValues
+        });
+});
+
 // @desc    Gets midi files available
 // @route   GET /api/v1/midi/
 // @access  PUBLIC

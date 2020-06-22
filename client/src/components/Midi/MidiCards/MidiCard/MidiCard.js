@@ -25,6 +25,7 @@ class MidiCard extends Component {
         authorName: this.props.authorName,
         seq: this.props.sequence,
         url: this.props.url,
+        genre: this.props.genre,
         pattern: [],
     }
 
@@ -61,6 +62,10 @@ class MidiCard extends Component {
                     <div className="DescriptionItem">
                         <h5>Author: </h5>
                         <p> {this.state.authorName}</p>
+                    </div>
+                    <div className="DescriptionItem">
+                        <h5>Genre: </h5>
+                        <p> {this.state.genre}</p>
                     </div>
                    <Link onClick={this.handlePlayDrumSequencer} to={'/sequencer'} ><PushButton/></Link>
                     {this.props.userId === this.state.authorId ?

@@ -48,6 +48,7 @@ class MidiCollection extends Component {
                     authorId = {midifile.author}
                     sequence={midifile.midi_sequence}
                     authorName={midifile.author_name}
+                    genre={midifile.genre}
             />
             )
         })

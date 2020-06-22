@@ -13,8 +13,9 @@ import Modal from "../../UI/Modal/Modal";
 import SaveForm from "../../UI/SaveForm/SaveForm";
 import Spinner from "../../UI/Spinner/Spinner";
 import * as midiActions from "../../store/actions";
+import NumberInput from "../../UI/NumberInput/NumberInput";
 
-//TODOD BUG on mobile not update steps bpm
+//TODO clear Title and Author on CLEAR/Step Change/note change
 class DrumSequencer extends Component {
 
     state = {
@@ -40,7 +41,6 @@ class DrumSequencer extends Component {
 
     constructor(props) {
         super(props);
-
         Tone.Transport.bpm.value = this.state.bpm;
         Tone.Master.volume.value = this.state.volume;
 
@@ -388,11 +388,11 @@ class DrumSequencer extends Component {
                     </div>
                     <div className={classes.TransportItemInput}>
                         <label>Total Steps</label>
-                        <input type="number" value={this.state.totalSteps} onChange={this.handleStepCountChange}/>
+                        <NumberInput id={"totalSteps"} value={this.state.totalSteps} onChangeHandler={this.handleStepCountChange} />
                     </div>
                     <div className={classes.TransportItemInput}>
                         <label>BPM</label>
-                        <input type="number" value={this.state.bpm} onChange={this.handleTempoChange}/>
+                        <NumberInput id={"bpm"} value={this.state.bpm} onChangeHandler={this.handleTempoChange} />
                     </div>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>

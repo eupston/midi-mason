@@ -53,4 +53,15 @@ export const generateDrumRNN = async (mididata) => {
     )
 };
 
+export const getUniqueMidiFileFieldValues = async (field) => {
+    return (
+        axios.get('/api/v1/midi/fields/' + field)
+            .then(res => {
+                return res.data.data;
+            })
+            .catch(err => console.log(err))
+    )
+};
+
+
 
