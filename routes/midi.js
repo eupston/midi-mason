@@ -7,6 +7,8 @@ router.get('/', midiController.getMidiFiles);
 
 router.post('/', midiController.createMidiFile);
 
+router.get('/fields/:field', midiController.getUniqueFieldValues);
+
 router.get('/:id', midiController.getMidiFile);
 
 router.put('/:id', midiController.updateMidiFile);

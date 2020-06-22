@@ -1,7 +1,6 @@
 import classes from './numberinput.module.css';
 import React, {Component} from 'react';
 
-//TODO allow for continuous increment/decrement mousedown
 class NumberInput extends Component {
     timeout;
     interval;
