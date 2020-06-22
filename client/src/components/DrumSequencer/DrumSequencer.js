@@ -15,6 +15,7 @@ import Spinner from "../../UI/Spinner/Spinner";
 import * as midiActions from "../../store/actions";
 import NumberInput from "../../UI/NumberInput/NumberInput";
 
+//TODO clear Title and Author on CLEAR/Step Change/note change
 class DrumSequencer extends Component {
 
     state = {

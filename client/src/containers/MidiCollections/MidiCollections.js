@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import JukeBox from "../JukeBox/Jukebox";
 import {getUniqueMidiFileFieldValues} from "../../utils/MidiQueries";
 
+//TODO sort by most populate genre top to bottom
 const MidiCollections = () => {
     const [genres, setGenres] = useState([]);
      useEffect( () => {
