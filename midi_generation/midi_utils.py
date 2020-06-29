@@ -6,6 +6,48 @@ import argparse
 import json
 import datetime
 
+
+midi_drum_mapping_truncation = {
+
+    "kick": {
+        "midi_notes" : [36, 35],
+        "preferred_note" : 36
+    },
+    "snare":{
+            "midi_notes" : [38, 27, 28, 31, 32, 33, 34, 37, 39, 40, 56, 65, 66, 75, 85],
+            "preferred_note" : 38
+    },
+    "closed_hi_hat":{
+            "midi_notes" : [42, 44, 54, 68, 69, 70, 71, 73, 78, 80, 22],
+            "preferred_note" : 42
+    },
+    "open_hi_hat":{
+            "midi_notes" : [46, 67, 72, 74, 79, 81, 26],
+            "preferred_note" : 46
+    },
+    "low_tom":{
+            "midi_notes" : [45, 29, 41, 43, 61, 64, 84],
+            "preferred_note" : 45
+    },
+    "mid_tom":{
+            "midi_notes" : [48, 47, 60, 63, 77, 86, 87],
+            "preferred_note" : 48
+    },
+    "high_tom":{
+            "midi_notes" : [50, 30, 62, 76, 83],
+            "preferred_note" : 50
+    },
+    "crash_cymbal":{
+            "midi_notes" : [49, 52, 55, 57, 58],
+            "preferred_note" : 49
+    },
+    "ride_cymbal":{
+            "midi_notes" : [51, 53, 59, 82],
+            "preferred_note" : 51
+    }
+}
+
+
 def extract_midi_data_from_midi_file(midifile):
     midi_data = {}
     primer_sequence = magenta.music.midi_file_to_sequence_proto(midifile)
@@ -13,7 +55,12 @@ def extract_midi_data_from_midi_file(midifile):
     serialized_notes = []
     for note in quantized_sequence.notes:
         current_note = {}
-        current_note["pitch"] = note.pitch
+        preferred_note = None
+        for drum in midi_drum_mapping_truncation.keys():
+            if note.pitch in midi_drum_mapping_truncation[drum]['midi_notes']:
+                preferred_note = midi_drum_mapping_truncation[drum]['preferred_note']
+                break
+        current_note["pitch"] = preferred_note
         current_note["velocity"] = note.velocity
         current_note["quantized_start_step"] = note.quantized_start_step
         serialized_notes.append(current_note)

@@ -11,7 +11,6 @@ const { promisify } = require('util');
 
 
 
-
 // @desc    Generates Midi drums
 // @route   POST /api/v1/midi/generate_drum_rnn
 // @access  PUBLIC
@@ -89,12 +88,12 @@ exports.uploadMidiFile = asyncHandler(async (req, res, next) => {
         }
         const S3_URL = await S3Upload(filename, filepath);
         const midi_sequence = JSON.parse(results[0].replace(/\'/g,"\""));
-
+        const tempo = req.body.tempo ? req.body.tempo : results[1];
         const midiinfo = {
             name: req.body.name,
             type:  "drum",
             url: S3_URL.Location,
-            tempo: results[1],
+            tempo: tempo,
             length: results[2],
             author: user,
             author_name: user.name,
