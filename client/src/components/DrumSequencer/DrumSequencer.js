@@ -15,7 +15,7 @@ import Spinner from "../../UI/Spinner/Spinner";
 import * as midiActions from "../../store/actions";
 import NumberInput from "../../UI/NumberInput/NumberInput";
 
-//TODO clear Title and Author on CLEAR/Step Change/note change
+//TODO Update modal step values with numberinput component
 class DrumSequencer extends Component {
 
     state = {
@@ -37,6 +37,7 @@ class DrumSequencer extends Component {
         generateDisabled:false,
         isDownloadable: this.props.isDownloadable,
         sequence_title: this.props.sequence_title,
+        authorName: this.props.authorName
     };
 
     constructor(props) {
@@ -97,7 +98,7 @@ class DrumSequencer extends Component {
             isDownloadable: this.state.isDownloadable,
             isUpdateable: this.props.isUpdateable,
             midiId: this.props.midiId,
-            authorName : this.props.authorName
+            authorName : this.state.authorName
         }
         this.props.setMidiSequencerData(midi_data);
     }
@@ -155,7 +156,7 @@ class DrumSequencer extends Component {
                 return updatedStep
             })
         })
-        this.setState({pattern: patternUpdated, isDownloadable:false});
+        this.setState({pattern: patternUpdated, isDownloadable:false, sequence_title:"", authorName:""});
     }
 
     handleToggleStep = (line, step) => {
@@ -292,7 +293,7 @@ class DrumSequencer extends Component {
                     isUpdateable: true,
                     sequence_title: this.state.sequence_title,
                     midiId: this.props.midiId,
-                    authorName : this.props.authorName
+                    authorName : this.state.authorName
                 }
                 this.props.setMidiSequencerData(midiData);
             }
@@ -338,7 +339,7 @@ class DrumSequencer extends Component {
             this.props.setMidiSequencerData(midiData);
         }
         this.handleSaveModalHide();
-        this.setState({isSaving:false, sequence_title: formData.name});
+        this.setState({isSaving:false, sequence_title: formData.name, authorName: data.author_name });
     }
 
     handleAIDrumGeneration = async (e, formData) => {
@@ -373,14 +374,14 @@ class DrumSequencer extends Component {
             this.props.setMidiSequencerData(midiData);
         }
         this.handleGeneratingModalHide();
-        this.setState({isGenerating:false, sequence_title: formData.name});
+        this.setState({isGenerating:false, sequence_title: formData.name, authorName: data.author_name});
     }
 
     render() {
         return (
             <div className={classes.DrumSequencer}>
                 <h2>{this.state.sequence_title}</h2>
-                <h6>{this.props.authorName ? "By " + this.props.authorName : null}</h6>
+                <h6>{this.state.authorName ? "By " + this.state.authorName : null}</h6>
                 <div className={classes.Transport}>
                     <div className={classes.TransportItem}>
                         <span>dummy</span>
