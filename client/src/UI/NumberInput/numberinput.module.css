@@ -2,12 +2,21 @@
     display: flex;
     justify-content: center;
     align-items:center;
+
 }
 .NumberInput input {
     min-height: 60px;
-}
-
-.Arrows {
+    outline: none;
+    background: #36363c;
+    color: #fff;
+    padding: 1em;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+    cursor: pointer;
+    border: 2px solid transparent;
+    width:100%;
 }
 
 .Arrows button {
@@ -17,4 +26,20 @@
     display: flex;
     justify-content: center;
     align-items:center;
+    outline: none;
+    background: #36363c;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .2);
+    border: 2px solid transparent;
+}
+
+.Arrows button:hover,
+.Arrows button:active{
+    color: #0087ff;
+    border: 2px solid #0087ff;
+}
+.Arrows button:disabled{
+    opacity: 0.5;
 }

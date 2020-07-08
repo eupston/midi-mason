@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import classes from './save.module.css';
 import Button from "../Button/Button";
+import NumberInput from "../NumberInput/NumberInput";
 
 class SaveForm extends Component {
     state = {
@@ -18,13 +19,14 @@ class SaveForm extends Component {
         errors:null,
     };
 
-    onKeyPress = (event) =>{
-        event.preventDefault();
-    }
-
     inputChangeHandler = (event) => {
         const input = event.target.id;
         const currentValue = event.target.value;
+        if(!isNaN(currentValue)){
+            if(this.props.min > parseInt(currentValue) || parseInt(currentValue) > this.props.max) {
+                return
+            }
+        }
         this.setState(prevState => {
             const updatedForm = {
                 ...prevState.saveForm,
@@ -74,18 +76,12 @@ class SaveForm extends Component {
                         {this.props.totalsteps ?
                             <React.Fragment>
                                 <label>Total Step</label>
-                                <input
-                                    id="generatedSteps"
-                                    type="number"
-                                    control="input"
-                                    className="form-control"
-                                    placeholder={this.props.min}
-                                    min={this.props.min}
-                                    max={this.props.max}
+                                <NumberInput
+                                    id={"generatedSteps"}
                                     value={this.state.saveForm['generatedSteps'].value}
-                                    onKeyDown={this.onKeyPress.bind(this)}
-                                    onChange={this.inputChangeHandler}
-                                    required="true"
+                                    onChangeHandler={this.inputChangeHandler}
+                                    min_input_height={'80px'}
+                                    button_width={'100%'}
                                 />
                             </React.Fragment>
                             :

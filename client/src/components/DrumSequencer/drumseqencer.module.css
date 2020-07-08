@@ -57,7 +57,6 @@
     cursor: pointer;
     border: 2px solid transparent;
     width:100%;
-
 }
 
 .TransportItem{
@@ -68,14 +67,12 @@
 
 .TransportItem button{
     min-height: 60px;
-
 }
 
 .TransportItemInput{
     display: grid;
     margin: 7px;
     flex-shrink: 10;
-
 }
 
 

@@ -10,7 +10,7 @@ class NumberInput extends Component {
         increment_button.addEventListener('click', () => {
             const e = new Event('input', { bubbles: true })
             const input = document.getElementById(this.props.id)
-            this.setNativeValue(input, this.props.value + 1);
+            this.setNativeValue(input, parseInt(this.props.value) + 1);
             input.dispatchEvent(e)
         })
         increment_button.addEventListener('mousedown', () => {
@@ -18,7 +18,7 @@ class NumberInput extends Component {
             const input = document.getElementById(this.props.id)
             this.timeout = setTimeout(() => {
                 this.interval = setInterval(() => {
-                    this.setNativeValue(input, this.props.value + 1);
+                    this.setNativeValue(input, parseInt(this.props.value) + 1);
                     input.dispatchEvent(e)
                 }, 80);
             }, 300);
@@ -30,15 +30,18 @@ class NumberInput extends Component {
         decrement_button.addEventListener('click', () => {
             const e = new Event('input', { bubbles: true })
             const input = document.getElementById(this.props.id)
-            this.setNativeValue(input, this.props.value - 1);
+            this.setNativeValue(input, parseInt(this.props.value) - 1);
             input.dispatchEvent(e)
         })
         decrement_button.addEventListener('mousedown', () => {
+            if(this.props.min > parseInt(this.props.value) || parseInt(this.props.value) > this.props.max) {
+                return
+            }
             const e = new Event('input', { bubbles: true })
             const input = document.getElementById(this.props.id)
             this.timeout = setTimeout(() => {
                 this.interval = setInterval(() => {
-                    this.setNativeValue(input, this.props.value - 1);
+                    this.setNativeValue(input, parseInt(this.props.value) - 1);
                     input.dispatchEvent(e)
                 }, 70);
             }, 300);
@@ -46,6 +49,7 @@ class NumberInput extends Component {
         decrement_button.addEventListener('mouseup', this.clearTimers);
         decrement_button.addEventListener('mouseleave', this.clearTimers);
     }
+
     clearTimers = () => {
         clearTimeout(this.timeout);
         clearInterval(this.interval);
@@ -68,15 +72,16 @@ class NumberInput extends Component {
         return (
             <div className={classes.NumberInput}>
                 <input
+                    style={{'min-height':this.props.min_input_height}}
                     id={this.props.id}
                     type="number"
                     value={this.props.value}
                     onChange={this.props.onChangeHandler}
                 />
                 <div className={classes.Arrows}>
-                    <button id={this.props.id + "_increment_btn"} type={"button"} >
+                    <button style={{'width':this.props.button_width}} id={this.props.id + "_increment_btn"} type={"button"} >
                         <i className="fa fa-caret-up"/></button>
-                    <button id={this.props.id + "_decrement_btn"} type={"button"} >
+                    <button style={{'width':this.props.button_width}}  id={this.props.id + "_decrement_btn"} type={"button"} >
                         <i className="fa fa-caret-down"/></button>
                 </div>
             </div>

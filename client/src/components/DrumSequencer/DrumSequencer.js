@@ -15,9 +15,7 @@ import Spinner from "../../UI/Spinner/Spinner";
 import * as midiActions from "../../store/actions";
 import NumberInput from "../../UI/NumberInput/NumberInput";
 
-//TODO Update modal step values with numberinput component
 class DrumSequencer extends Component {
-
     state = {
         bpm: this.props.bpm,
         volume: -6,
@@ -60,6 +58,7 @@ class DrumSequencer extends Component {
     }
 
     componentWillMount(){
+
         if(this.state.pattern.length < 1) {
             const pattern = Array(this.state.totalTracks)
                 .fill(new Array(this.state.totalSteps)

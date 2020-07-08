@@ -6,7 +6,7 @@ const MyBeats = (props) => {
     return (
         <div>
             {props.isLoggedIn ?
-                <JukeBox filterParams={{author: props.userId }} title={"My Beats"}/>
+                <JukeBox filterParams={{limit: 50, author: props.userId }} title={"My Beats"}/>
                 :
                 <h1>Please Login to View Your Beats.</h1>
             }
