@@ -1,8 +1,34 @@
 const crypto = require("crypto");
 const User = require("../models/User");
-// const sendEmail = require("../utils/sendEmail"); //TODO setup node mailer
+const nodemailer = require('nodemailer');
+const sendGridTransport = require('nodemailer-sendgrid-transport');
+
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
+
+
+const transporter = nodemailer.createTransport(sendGridTransport({
+    auth: {
+        api_key: process.env.SEND_GRID_API_KEY
+    }
+}));
+
+// @desc    Emails the Site Admin
+// @route   POST /api/v1/auth/email
+// @access  PUBLIC
+exports.postEmail = asyncHandler(async (req, res, next) => {
+    const result = await transporter.sendMail({
+        to: "eupston130@hotmail.com",
+        from: 'site-admin@midi-mason.com',
+        subject: req.body.subject,
+        html: req.body.content
+    });
+    return res.status(200)
+        .json({
+            data: result,
+        });
+});
+
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
