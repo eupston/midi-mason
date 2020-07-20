@@ -97,6 +97,8 @@ def note_sequence_to_midi_file(note_sequence, tempo, length, output_path="output
 
     midi_date_file = str(datetime.datetime.now()).replace(" ", "_") + ".mid"
     midi_file_path = os.path.join(output_path, midi_date_file)
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
     with open(midi_file_path, "wb") as output_file:
         MyMIDI.writeFile(output_file)
     return midi_file_path
