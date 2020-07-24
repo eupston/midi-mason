@@ -12,6 +12,7 @@ import MyBeats from "./containers/MyBeats/MyBeats";
 import MidiCollections from "./containers/MidiCollections/MidiCollections";
 import Contact from "./components/Contact/Contact";
 
+//TODO bug with audio buffer not clearing on start and stop
 class App extends Component {
   render() {
     return (
